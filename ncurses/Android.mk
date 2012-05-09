@@ -72,6 +72,8 @@ LOCAL_SRC_FILES := \
 	base/lib_slkset.c \
 	base/lib_slktouch.c \
 	base/lib_touch.c \
+	trace/lib_tracedmp.c \
+	trace/lib_tracemse.c \
 	tty/lib_tstp.c \
 	base/lib_ungetch.c \
 	tty/lib_vidattr.c \
@@ -92,6 +94,7 @@ LOCAL_SRC_FILES := \
 	base/lib_dft_fgbg.c \
 	tinfo/lib_print.c \
 	base/resizeterm.c \
+	trace/trace_xnames.c \
 	tinfo/use_screen.c \
 	base/use_window.c \
 	base/wresize.c \
@@ -99,7 +102,9 @@ LOCAL_SRC_FILES := \
 	tinfo/add_tries.c \
 	tinfo/alloc_ttype.c \
 	codes.c \
+	comp_captab.c \
 	tinfo/comp_error.c \
+	tinfo/comp_hash.c \
 	tinfo/db_iterator.c \
 	tinfo/doalloc.c \
 	tinfo/entries.c \
@@ -127,6 +132,9 @@ LOCAL_SRC_FILES := \
 	tinfo/lib_tparm.c \
 	tinfo/lib_tputs.c \
 	trace/lib_trace.c \
+	trace/lib_traceatr.c \
+	trace/lib_tracebits.c \
+	trace/lib_tracechr.c \
 	tinfo/lib_ttyflags.c \
 	tty/lib_twait.c \
 	tinfo/name_match.c \
@@ -135,15 +143,15 @@ LOCAL_SRC_FILES := \
 	tinfo/read_termcap.c \
 	tinfo/setbuf.c \
 	tinfo/strings.c \
+	trace/trace_buf.c \
+	trace/trace_tries.c \
 	base/tries.c \
 	tinfo/trim_sgr0.c \
 	unctrl.c \
 	trace/visbuf.c \
 	tinfo/alloc_entry.c \
 	tinfo/captoinfo.c \
-	comp_captab.c \
 	tinfo/comp_expand.c \
-	tinfo/comp_hash.c \
 	tinfo/comp_parse.c \
 	tinfo/comp_scan.c \
 	tinfo/parse_entry.c \
@@ -154,7 +162,7 @@ LOCAL_SRC_FILES := \
 	base/keybound.c \
 	base/keyok.c \
 	base/version.c
-	
+
 LOCAL_C_INCLUDES += \
 	$(LOCAL_PATH)/../include \
 	$(LOCAL_PATH)
@@ -172,6 +180,3 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_SHARED_LIBRARY)
-
-# ========================================================
-include $(call all-makefiles-under,$(LOCAL_PATH))
