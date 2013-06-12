@@ -12,7 +12,7 @@
 <FONT COLOR=green><EM>--                                 B O D Y                                  --</EM></FONT>
 <FONT COLOR=green><EM>--                                                                          --</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
-<FONT COLOR=green><EM>-- Copyright (c) 2000-2004,2006 Free Software Foundation, Inc.              --</EM></FONT>
+<FONT COLOR=green><EM>-- Copyright (c) 2000-2006,2009 Free Software Foundation, Inc.              --</EM></FONT>
 <FONT COLOR=green><EM>--                                                                          --</EM></FONT>
 <FONT COLOR=green><EM>-- Permission is hereby granted, free of charge, to any person obtaining a  --</EM></FONT>
 <FONT COLOR=green><EM>-- copy of this software and associated documentation files (the            --</EM></FONT>
@@ -40,8 +40,8 @@
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 <FONT COLOR=green><EM>--  Author:  Juergen Pfeifer, 1996</EM></FONT>
 <FONT COLOR=green><EM>--  Version Control:</EM></FONT>
-<FONT COLOR=green><EM>--  @Revision: 1.11 @</EM></FONT>
-<FONT COLOR=green><EM>--  @Date: 2006/06/25 14:30:22 @</EM></FONT>
+<FONT COLOR=green><EM>--  @Revision: 1.12 @</EM></FONT>
+<FONT COLOR=green><EM>--  @Date: 2009/12/26 17:38:58 @</EM></FONT>
 <FONT COLOR=green><EM>--  Binding Version 01.00</EM></FONT>
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
 
@@ -64,7 +64,7 @@
       To_C (<A HREF="terminal_interface-curses-termcap__ads.htm#ref_59_24">Name</A>, <A HREF="terminal_interface-curses-termcap__adb.htm#ref_54_7">NameTxt</A>, <A HREF="terminal_interface-curses-termcap__adb.htm#ref_55_7">Length</A>);
       <A HREF="terminal_interface-curses-termcap__adb.htm#ref_57_7">result</A> := <A HREF="terminal_interface-curses-termcap__adb.htm#ref_51_16">tgetent</A> (char_array (<A HREF="terminal_interface-curses-termcap__adb.htm#ref_56_7">ignored</A>), <A HREF="terminal_interface-curses-termcap__adb.htm#ref_54_7">NameTxt</A>);
       <b>if</b> <A HREF="terminal_interface-curses-termcap__adb.htm#ref_57_7">result</A> = -1 <b>then</b>
-         <b>raise</b> <A HREF="terminal_interface-curses__ads.htm#ref_383_4">Curses_Exception</A>;
+         <b>raise</b> <A HREF="terminal_interface-curses__ads.htm#ref_385_4">Curses_Exception</A>;
       <b>else</b>
          <b>return</b> Boolean'Val (<A HREF="terminal_interface-curses-termcap__adb.htm#ref_57_7">result</A>);
       <b>end</b> <b>if</b>;
@@ -87,7 +87,7 @@
    <b>end</b> <A HREF="terminal_interface-curses-termcap__ads.htm#ref_63_13">Get_Flag</A>;
 
 <FONT COLOR=green><EM>------------------------------------------------------------------------------</EM></FONT>
-   <b>procedure</b> <FONT COLOR=red><A NAME="ref_85_14" HREF="terminal_interface-curses-termcap__ads.htm#ref_67_14">Get_Number</A></FONT> (<FONT COLOR=red><A NAME="ref_85_26" HREF="terminal_interface-curses-termcap__ads.htm#ref_67_26">Name</A></FONT>   : <b>in</b>  String;
+   <b>procedure</b> <FONT COLOR=red><A NAME="ref_85_14" HREF="terminal_interface-curses-termcap__ads.htm#ref_67_14">Get_Number</A></FONT> (<FONT COLOR=red><A NAME="ref_85_26" HREF="terminal_interface-curses-termcap__ads.htm#ref_67_26">Name</A></FONT>   : String;
                          <FONT COLOR=red><A NAME="ref_86_26" HREF="terminal_interface-curses-termcap__ads.htm#ref_68_26">Value</A></FONT>  : <b>out</b> Integer;
                          <FONT COLOR=red><A NAME="ref_87_26" HREF="terminal_interface-curses-termcap__ads.htm#ref_69_26">Result</A></FONT> : <b>out</b> Boolean)
    <b>is</b>

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2007 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2007,2010 Free Software Foundation, Inc.                   *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: inchs.c,v 1.9 2007/07/21 19:01:43 tom Exp $
+ * $Id: inchs.c,v 1.11 2010/11/13 23:41:23 tom Exp $
  *
  * Author: Thomas E Dickey
  */
@@ -152,16 +152,16 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	    break;
 	}
 
-	mvwprintw(chrwin, 0, 0, "char:");
+	MvWPrintw(chrwin, 0, 0, "char:");
 	wclrtoeol(chrwin);
 
 	if (txtwin != stdscr) {
 	    wmove(txtwin, txt_y, txt_x);
 
-	    if ((ch = winch(txtwin)) != ERR) {
+	    if ((ch = (int) winch(txtwin)) != ERR) {
 		if (waddch(chrwin, (chtype) ch) != ERR) {
 		    for (j = txt_x + 1; j < getmaxx(txtwin); ++j) {
-			if ((ch = mvwinch(txtwin, txt_y, j)) != ERR) {
+			if ((ch = (int) mvwinch(txtwin, txt_y, j)) != ERR) {
 			    if (waddch(chrwin, (chtype) ch) == ERR) {
 				break;
 			    }
@@ -174,10 +174,10 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	} else {
 	    move(txt_y, txt_x);
 
-	    if ((ch = inch()) != ERR) {
+	    if ((ch = (int) inch()) != ERR) {
 		if (waddch(chrwin, (chtype) ch) != ERR) {
 		    for (j = txt_x + 1; j < getmaxx(txtwin); ++j) {
-			if ((ch = mvinch(txt_y, j)) != ERR) {
+			if ((ch = (int) mvinch(txt_y, j)) != ERR) {
 			    if (waddch(chrwin, (chtype) ch) == ERR) {
 				break;
 			    }
@@ -190,7 +190,7 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	}
 	wnoutrefresh(chrwin);
 
-	mvwprintw(strwin, 0, 0, "text:");
+	MvWPrintw(strwin, 0, 0, "text:");
 	wclrtobot(strwin);
 
 	limit = getmaxx(strwin) - 5;
@@ -198,38 +198,38 @@ test_inchs(int level, char **argv, WINDOW *chrwin, WINDOW *strwin)
 	if (txtwin != stdscr) {
 	    wmove(txtwin, txt_y, txt_x);
 	    if (winchstr(txtwin, text) != ERR) {
-		mvwaddchstr(strwin, 0, 5, text);
+		MvWAddChStr(strwin, 0, 5, text);
 	    }
 
 	    wmove(txtwin, txt_y, txt_x);
 	    if (winchnstr(txtwin, text, limit) != ERR) {
-		mvwaddchstr(strwin, 1, 5, text);
+		MvWAddChStr(strwin, 1, 5, text);
 	    }
 
 	    if (mvwinchstr(txtwin, txt_y, txt_x, text) != ERR) {
-		mvwaddchstr(strwin, 2, 5, text);
+		MvWAddChStr(strwin, 2, 5, text);
 	    }
 
 	    if (mvwinchnstr(txtwin, txt_y, txt_x, text, limit) != ERR) {
-		mvwaddchstr(strwin, 3, 5, text);
+		MvWAddChStr(strwin, 3, 5, text);
 	    }
 	} else {
 	    move(txt_y, txt_x);
 	    if (inchstr(text) != ERR) {
-		mvwaddchstr(strwin, 0, 5, text);
+		MvWAddChStr(strwin, 0, 5, text);
 	    }
 
 	    move(txt_y, txt_x);
 	    if (inchnstr(text, limit) != ERR) {
-		mvwaddchstr(strwin, 1, 5, text);
+		MvWAddChStr(strwin, 1, 5, text);
 	    }
 
 	    if (mvinchstr(txt_y, txt_x, text) != ERR) {
-		mvwaddchstr(strwin, 2, 5, text);
+		MvWAddChStr(strwin, 2, 5, text);
 	    }
 
 	    if (mvinchnstr(txt_y, txt_x, text, limit) != ERR) {
-		mvwaddchstr(strwin, 3, 5, text);
+		MvWAddChStr(strwin, 3, 5, text);
 	    }
 	}
 

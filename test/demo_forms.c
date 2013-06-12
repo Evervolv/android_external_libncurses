@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2003-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 2003-2010,2011 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,7 +26,7 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: demo_forms.c,v 1.30 2008/10/18 20:38:20 tom Exp $
+ * $Id: demo_forms.c,v 1.38 2011/01/15 18:15:11 tom Exp $
  *
  * Demonstrate a variety of functions from the form library.
  * Thomas Dickey - 2003/4/26
@@ -83,7 +83,7 @@ make_label(int frow, int fcol, NCURSES_CONST char *label)
 
     if (f) {
 	set_field_buffer(f, 0, label);
-	set_field_opts(f, (int) (field_opts(f) & ~O_ACTIVE));
+	set_field_opts(f, (int) ((unsigned) field_opts(f) & ~O_ACTIVE));
     }
     return (f);
 }
@@ -97,6 +97,8 @@ make_field(int frow, int fcol, int rows, int cols)
     FIELD *f = new_field(rows, cols, frow, fcol, o_value, 1);
 
     if (f) {
+	FieldAttrs *ptr;
+
 	set_field_back(f, A_UNDERLINE);
 	/*
 	 * If -j and -d options are combined, -j loses.  It is documented in
@@ -122,7 +124,12 @@ make_field(int frow, int fcol, int rows, int cols)
 	/*
 	 * The userptr is used in edit_field.c's inactive_field().
 	 */
-	set_field_userptr(f, (void *) (long) field_back(f));
+	ptr = (FieldAttrs *) field_userptr(f);
+	if (ptr == 0) {
+	    ptr = typeCalloc(FieldAttrs, 1);
+	    ptr->background = field_back(f);
+	}
+	set_field_userptr(f, (void *) ptr);
 	if (t_value)
 	    set_field_buffer(f, 0, t_value);
     }
@@ -168,7 +175,7 @@ erase_form(FORM * f)
 static void
 show_insert_mode(bool insert_mode)
 {
-    mvaddstr(5, 57, (insert_mode
+    MvAddStr(5, 57, (insert_mode
 		     ? "form_status: insert "
 		     : "form_status: overlay"));
 }
@@ -209,7 +216,7 @@ my_form_driver(FORM * form, int c)
     case MY_EDT_MODE:
 	if ((field = current_field(form)) != 0) {
 	    set_current_field(form, another_field(form, field));
-	    if (field_opts(field) & O_EDIT) {
+	    if ((unsigned) field_opts(field) & O_EDIT) {
 		field_opts_off(field, O_EDIT);
 		set_field_status(field, 0);
 	    } else {
@@ -247,12 +254,14 @@ show_current_field(WINDOW *win, FORM * form)
     char *buffer;
     int nbuf;
     int field_rows, field_cols, field_max;
+    int currow, curcol;
 
     if (has_colors()) {
 	wbkgd(win, COLOR_PAIR(1));
     }
     werase(win);
-    wprintw(win, "Cursor: %d,%d", form->currow, form->curcol);
+    form_getyx(form, currow, curcol);
+    wprintw(win, "Cursor: %d,%d", currow, curcol);
     if (data_ahead(form))
 	waddstr(win, " ahead");
     if (data_behind(form))
@@ -285,7 +294,7 @@ show_current_field(WINDOW *win, FORM * form)
 		waddstr(win, "other");
 	}
 
-	if (field_opts(field) & O_EDIT)
+	if ((unsigned) field_opts(field) & O_EDIT)
 	    waddstr(win, " editable");
 	else
 	    waddstr(win, " readonly");
@@ -300,13 +309,13 @@ show_current_field(WINDOW *win, FORM * form)
 	}
 
 	waddch(win, ' ');
-	wattrset(win, field_fore(field));
+	(void) wattrset(win, field_fore(field));
 	waddstr(win, "fore");
 	wattroff(win, field_fore(field));
 
 	waddch(win, '/');
 
-	wattrset(win, field_back(field));
+	(void) wattrset(win, field_back(field));
 	waddstr(win, "back");
 	wattroff(win, field_back(field));
 
@@ -317,7 +326,7 @@ show_current_field(WINDOW *win, FORM * form)
 	for (nbuf = 0; nbuf <= 2; ++nbuf) {
 	    if ((buffer = field_buffer(field, nbuf)) != 0) {
 		wprintw(win, "buffer %d:", nbuf);
-		wattrset(win, A_REVERSE);
+		(void) wattrset(win, A_REVERSE);
 		waddstr(win, buffer);
 		wattroff(win, A_REVERSE);
 		waddstr(win, "\n");
@@ -344,7 +353,7 @@ demo_forms(void)
 
     help_edit_field();
 
-    mvaddstr(4, 57, "Forms Entry Test");
+    MvAddStr(4, 57, "Forms Entry Test");
     show_insert_mode(TRUE);
 
     refresh();
@@ -416,7 +425,7 @@ demo_forms(void)
 	set_field_buffer(f[n - 1], 1, "Hello\nWorld!");
     }
 
-    f[n++] = (FIELD *) 0;
+    f[n] = (FIELD *) 0;
 
     if ((form = new_form(f)) != 0) {
 
@@ -444,8 +453,11 @@ demo_forms(void)
 
 	free_form(form);
     }
-    for (c = 0; f[c] != 0; c++)
+    for (c = 0; f[c] != 0; c++) {
+	void *ptr = field_userptr(f[c]);
+	free(ptr);
 	free_field(f[c]);
+    }
     noraw();
     nl();
 

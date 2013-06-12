@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 1998-2007,2008 Free Software Foundation, Inc.              *
+ * Copyright (c) 1998-2010,2011 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -29,7 +29,7 @@
 /****************************************************************************
  *  Author: Thomas E. Dickey                    1996-on                     *
  ****************************************************************************/
-/* $Id: test.priv.h,v 1.79 2008/10/04 21:53:41 tom Exp $ */
+/* $Id: test.priv.h,v 1.103 2011/03/22 09:15:45 tom Exp $ */
 
 #ifndef __TEST_PRIV_H
 #define __TEST_PRIV_H 1
@@ -42,14 +42,17 @@
  */
 #ifdef  HAVE_LIBFORMW
 #define HAVE_LIBFORMW 1
+#define HAVE_LIBFORM 1
 #endif
 
 #ifdef  HAVE_LIBMENUW
 #define HAVE_LIBMENUW 1
+#define HAVE_LIBMENU 1
 #endif
 
 #ifdef  HAVE_LIBPANELW
 #define HAVE_LIBPANELW 1
+#define HAVE_LIBPANEL 1
 #endif
 
 /*
@@ -113,6 +116,10 @@
 
 #ifndef HAVE_LOCALE_H
 #define HAVE_LOCALE_H 0
+#endif
+
+#ifndef HAVE_MATH_H
+#define HAVE_MATH_H 0
 #endif
 
 #ifndef HAVE_MENU_H
@@ -179,12 +186,12 @@
 #define HAVE_TIGETNUM 0
 #endif
 
-#ifndef HAVE_TYPEAHEAD
-#define HAVE_TYPEAHEAD 0
-#endif
-
 #ifndef HAVE_TIGETSTR
 #define HAVE_TIGETSTR 0
+#endif
+
+#ifndef HAVE_TYPEAHEAD
+#define HAVE_TYPEAHEAD 0
 #endif
 
 #ifndef HAVE_WINSSTR
@@ -207,19 +214,32 @@
 #define NEED_PTEM_H 0
 #endif
 
+#ifndef NEED_WCHAR_H
+#define NEED_WCHAR_H 0
+#endif
+
 #ifndef NO_LEAKS
 #define NO_LEAKS 0
 #endif
 
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-#include <signal.h>	/* include before curses.h to work around glibc bug */
+#include <signal.h>		/* include before curses.h to work around glibc bug */
+
+#if NEED_WCHAR_H
+#include <wchar.h>
+#ifdef HAVE_LIBUTF8_H
+#include <libutf8.h>
+#endif
+#endif
 
 #if defined(HAVE_XCURSES)
 #include <xcurses.h>
@@ -231,7 +251,7 @@
 #include <curses.h>
 #endif
 
-#if defined(HAVE_XCURSES)
+#if defined(HAVE_XCURSES) || defined(PDCURSES)
 /* no other headers */
 #undef  HAVE_SETUPTERM		/* nonfunctional */
 #define HAVE_SETUPTERM 0
@@ -274,20 +294,20 @@ extern int optind;
 #if HAVE_LOCALE_H
 #include <locale.h>
 #else
-#define setlocale(name,string) /* nothing */
+#define setlocale(name,string)	/* nothing */
 #endif
 
 #include <assert.h>
 #include <ctype.h>
 
 #ifndef GCC_NORETURN
-#define GCC_NORETURN /* nothing */
+#define GCC_NORETURN		/* nothing */
 #endif
 #ifndef GCC_PRINTFLIKE
-#define GCC_PRINTFLIKE(a,b) /* nothing */
+#define GCC_PRINTFLIKE(a,b)	/* nothing */
 #endif
 #ifndef GCC_UNUSED
-#define GCC_UNUSED /* nothing */
+#define GCC_UNUSED		/* nothing */
 #endif
 
 #ifndef HAVE_GETNSTR
@@ -302,8 +322,18 @@ extern int optind;
 #endif
 #endif
 
+#if !USE_SOFTKEYS
+#define slk_init() /* nothing */
+#define slk_restore() /* nothing */
+#define slk_clear() /* nothing */
+#endif
+
+#ifndef HAVE_WSYNCDOWN
+#define wsyncdown(win) /* nothing */
+#endif
+
 #ifndef USE_WIDEC_SUPPORT
-#if defined(_XOPEN_SOURCE_EXTENDED) && defined(WACS_ULCORNER)
+#if (defined(_XOPEN_SOURCE_EXTENDED) || defined(_XPG5)) && defined(WACS_ULCORNER)
 #define USE_WIDEC_SUPPORT 1
 #else
 #define USE_WIDEC_SUPPORT 0
@@ -328,6 +358,20 @@ extern int optind;
 #define USE_LIBFORM 0
 #endif
 
+/* workaround, to build against NetBSD's variant of the form library */
+#ifdef HAVE_NETBSD_FORM_H
+#define form_getyx(form, y, x) y = current_field(form)->cursor_ypos, x = current_field(form)->cursor_xpos
+#else
+#define form_getyx(form, y, x) y = (form)->currow, x = (form)->curcol
+#endif
+
+/* workaround, to build against NetBSD's variant of the form library */
+#ifdef HAVE_NETBSD_MENU_H
+#define menu_itemwidth(menu) (menu)->max_item_width
+#else
+#define menu_itemwidth(menu) (menu)->itemlen
+#endif
+
 #ifndef HAVE_TYPE_ATTR_T
 #if !USE_WIDEC_SUPPORT && !defined(attr_t)
 #define attr_t chtype
@@ -349,6 +393,79 @@ extern int optind;
 #define CCHARW_MAX 5
 #endif
 
+#if defined(NCURSES_VERSION) && defined(CURSES_WACS_ARRAY) && !defined(CURSES_WACS_SYMBOLS)
+#define CURSES_WACS_SYMBOLS
+#endif
+
+#if defined(CURSES_WACS_ARRAY) && !defined(CURSES_WACS_SYMBOLS)
+/* NetBSD 5.1 defines these incorrectly */
+#undef	WACS_RARROW
+#undef	WACS_LARROW
+#undef	WACS_UARROW
+#undef	WACS_DARROW
+#undef	WACS_BLOCK
+#undef	WACS_DIAMOND
+#undef	WACS_CKBOARD
+#undef	WACS_DEGREE
+#undef	WACS_PLMINUS
+#undef	WACS_BOARD
+#undef	WACS_LANTERN
+#undef	WACS_LRCORNER
+#undef	WACS_URCORNER
+#undef	WACS_ULCORNER
+#undef	WACS_LLCORNER
+#undef	WACS_PLUS
+#undef	WACS_HLINE
+#undef	WACS_S1
+#undef	WACS_S9
+#undef	WACS_LTEE
+#undef	WACS_RTEE
+#undef	WACS_BTEE
+#undef	WACS_TTEE
+#undef	WACS_VLINE
+#undef	WACS_BULLET
+#undef	WACS_S3
+#undef	WACS_S7
+#undef	WACS_LEQUAL
+#undef	WACS_GEQUAL
+#undef	WACS_PI
+#undef	WACS_NEQUAL
+#undef	WACS_STERLING
+
+#define	WACS_RARROW     &(CURSES_WACS_ARRAY['+'])
+#define	WACS_LARROW     &(CURSES_WACS_ARRAY[','])
+#define	WACS_UARROW     &(CURSES_WACS_ARRAY['-'])
+#define	WACS_DARROW     &(CURSES_WACS_ARRAY['.'])
+#define	WACS_BLOCK      &(CURSES_WACS_ARRAY['0'])
+#define	WACS_DIAMOND    &(CURSES_WACS_ARRAY['`'])
+#define	WACS_CKBOARD    &(CURSES_WACS_ARRAY['a'])
+#define	WACS_DEGREE     &(CURSES_WACS_ARRAY['f'])
+#define	WACS_PLMINUS    &(CURSES_WACS_ARRAY['g'])
+#define	WACS_BOARD      &(CURSES_WACS_ARRAY['h'])
+#define	WACS_LANTERN    &(CURSES_WACS_ARRAY['i'])
+#define	WACS_LRCORNER   &(CURSES_WACS_ARRAY['j'])
+#define	WACS_URCORNER   &(CURSES_WACS_ARRAY['k'])
+#define	WACS_ULCORNER   &(CURSES_WACS_ARRAY['l'])
+#define	WACS_LLCORNER   &(CURSES_WACS_ARRAY['m'])
+#define	WACS_PLUS       &(CURSES_WACS_ARRAY['n'])
+#define	WACS_HLINE      &(CURSES_WACS_ARRAY['q'])
+#define	WACS_S1         &(CURSES_WACS_ARRAY['o'])
+#define	WACS_S9         &(CURSES_WACS_ARRAY['s'])
+#define	WACS_LTEE       &(CURSES_WACS_ARRAY['t'])
+#define	WACS_RTEE       &(CURSES_WACS_ARRAY['u'])
+#define	WACS_BTEE       &(CURSES_WACS_ARRAY['v'])
+#define	WACS_TTEE       &(CURSES_WACS_ARRAY['w'])
+#define	WACS_VLINE      &(CURSES_WACS_ARRAY['x'])
+#define	WACS_BULLET     &(CURSES_WACS_ARRAY['~'])
+#define	WACS_S3		&(CURSES_WACS_ARRAY['p'])
+#define	WACS_S7		&(CURSES_WACS_ARRAY['r'])
+#define	WACS_LEQUAL	&(CURSES_WACS_ARRAY['y'])
+#define	WACS_GEQUAL	&(CURSES_WACS_ARRAY['z'])
+#define	WACS_PI		&(CURSES_WACS_ARRAY['{'])
+#define	WACS_NEQUAL	&(CURSES_WACS_ARRAY['|'])
+#define	WACS_STERLING	&(CURSES_WACS_ARRAY['}'])
+#endif
+
 #undef CTRL
 #define CTRL(x)	((x) & 0x1f)
 
@@ -356,8 +473,17 @@ extern int optind;
 #define ESCAPE		CTRL('[')
 
 #ifndef KEY_MIN
-#define KEY_MIN 256	/* not defined in Solaris 8 */
+#define KEY_MIN 256		/* not defined in Solaris 8 */
 #endif
+
+#ifdef DECL_CURSES_DATA_BOOLNAMES
+extern char *boolnames[], *boolcodes[], *boolfnames[];
+extern char *numnames[], *numcodes[], *numfnames[];
+extern char *strnames[], *strcodes[], *strfnames[];
+#endif
+
+#define colored_chtype(ch, attr, pair) \
+	((chtype) (ch) | (chtype) (attr) | (chtype) COLOR_PAIR(pair))
 
 /*
  * Workaround for HPUX
@@ -373,6 +499,25 @@ extern int optind;
 #define getpary(w) __getpary(w)
 #endif
 
+/*
+ * Workaround in case getcchar() returns a positive value when the source
+ * string produces only a L'\0'.
+ */
+#define TEST_CCHAR(s, count, then_stmt, else_stmt) \
+	if ((count = getcchar(s, NULL, NULL, NULL, NULL)) > 0) { \
+	    wchar_t test_wch[CCHARW_MAX + 2]; \
+	    attr_t test_attrs; \
+	    short test_pair; \
+	    \
+	    if (getcchar( s, test_wch, &test_attrs, &test_pair, NULL) == OK \
+		&& test_wch[0] != L'\0') { \
+		then_stmt \
+	    } else { \
+		else_stmt \
+	    } \
+	} else { \
+	    else_stmt \
+	}
 /*
  * These usually are implemented as macros, but may be functions.
  */
@@ -464,12 +609,20 @@ extern int optind;
 #define EXIT_FAILURE 1
 #endif
 
+#ifdef __MINGW32__
+#include <nc_mingw.h>
+/* conflicts in test/firstlast.c */
+#undef large
+#undef small
+
+#endif
+
 /* Use this to quiet gcc's -Wwrite-strings warnings, but accommodate SVr4
  * curses which doesn't have const parameters declared (so far) in the places
  * that XSI shows.
  */
 #ifndef NCURSES_CONST
-#define NCURSES_CONST /* nothing */
+#define NCURSES_CONST		/* nothing */
 #endif
 
 /* out-of-band values for representing absent capabilities */
@@ -482,7 +635,7 @@ extern int optind;
 #define CANCELLED_NUMERIC	(-2)
 #define CANCELLED_STRING	(char *)(-1)
 
-#define VALID_BOOLEAN(s) ((unsigned char)(s) <= 1) /* reject "-1" */
+#define VALID_BOOLEAN(s) ((unsigned char)(s) <= 1)	/* reject "-1" */
 #define VALID_NUMERIC(s) ((s) >= 0)
 #define VALID_STRING(s)  ((s) != CANCELLED_STRING && (s) != ABSENT_STRING)
 
@@ -521,12 +674,32 @@ extern char *tgoto(char *, int, int);	/* available, but not prototyped */
 #endif
 
 /*
+ * Workaround to build with Sun's default SVr4 curses.
+ */
+#ifdef NCURSES_VERSION
+#ifndef HAVE_VW_PRINTW
+#define HAVE_VW_PRINTW 1
+#endif
+#endif
+
+/*
+ * ncurses provides arrays of capability names; X/Open discarded these SVr4
+ * features.  Some implementations continue to provide them (see the test
+ * configure script).
+ */
+#ifdef NCURSES_VERSION
+#ifndef HAVE_CURSES_DATA_BOOLNAMES
+#define HAVE_CURSES_DATA_BOOLNAMES 1
+#endif
+#endif
+
+/*
  * ncurses uses const in some places where X/Open does (or did) not allow.
  */
 #ifdef NCURSES_VERSION
 #define CONST_MENUS const
 #else
-#define CONST_MENUS /* nothing */
+#define CONST_MENUS		/* nothing */
 #endif
 
 #ifndef HAVE_USE_WINDOW
@@ -542,8 +715,8 @@ extern char *tgoto(char *, int, int);	/* available, but not prototyped */
  */
 
 #if !HAVE_USE_WINDOW
-typedef int (*NCURSES_WINDOW_CB)(WINDOW *, void *);
-typedef int (*NCURSES_SCREEN_CB)(SCREEN *, void *);
+typedef int (*NCURSES_WINDOW_CB) (WINDOW *, void *);
+typedef int (*NCURSES_SCREEN_CB) (SCREEN *, void *);
 #endif
 
 #if HAVE_USE_WINDOW
@@ -560,7 +733,7 @@ typedef int (*NCURSES_SCREEN_CB)(SCREEN *, void *);
 #define USING_SCREEN(s,func,data) use_screen(s, (NCURSES_SCREEN_CB) func, data)
 #define WANT_USE_SCREEN() extern void _nc_want_use_screen(void)
 #else
-#define USING_SCREEN(s,func,data) func(s,data)
+#define USING_SCREEN(s,func,data) func(data)
 #define WANT_USE_SCREEN() extern void _nc_want_use_screen(void)
 #endif
 
@@ -571,6 +744,27 @@ typedef int (*NCURSES_SCREEN_CB)(SCREEN *, void *);
 #define Trace(p)		/* nothing */
 #define USE_TRACE 0
 #endif
+
+#define MvAddCh         (void) mvaddch
+#define MvWAddCh        (void) mvwaddch
+#define MvAddStr        (void) mvaddstr
+#define MvWAddStr       (void) mvwaddstr
+#define MvWAddChStr     (void) mvwaddchstr
+#define MvPrintw        (void) mvprintw
+#define MvWPrintw       (void) mvwprintw
+#define MvHLine         (void) mvhline
+#define MvWHLine        (void) mvwhline
+#define MvVLine         (void) mvvline
+#define MvWVLine        (void) mvwvline
+
+/*
+ * Workaround for defective implementation of gcc attribute warn_unused_result
+ */
+#if defined(__GNUC__) && defined(_FORTIFY_SOURCE)
+#define IGNORE_RC(func) errno = func
+#else
+#define IGNORE_RC(func) (void) func
+#endif /* gcc workarounds */
 
 #define init_mb(state)	memset(&state, 0, sizeof(state))
 

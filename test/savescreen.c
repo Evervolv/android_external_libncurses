@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2007 Free Software Foundation, Inc.                        *
+ * Copyright (c) 2007-2010,2011 Free Software Foundation, Inc.              *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -26,13 +26,18 @@
  * authorization.                                                           *
  ****************************************************************************/
 /*
- * $Id: savescreen.c,v 1.10 2007/07/21 17:57:37 tom Exp $
+ * $Id: savescreen.c,v 1.15 2011/01/15 18:15:11 tom Exp $
  *
  * Demonstrate save/restore functions from the curses library.
  * Thomas Dickey - 2007/7/14
  */
 
 #include <test.priv.h>
+
+#if HAVE_SCR_DUMP
+
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -46,6 +51,13 @@
 #endif
 
 static bool use_init = FALSE;
+
+static int
+fexists(const char *name)
+{
+    struct stat sb;
+    return (stat(name, &sb) == 0 && (sb.st_mode & S_IFMT) == S_IFREG);
+}
 
 static void
 setup_next(void)
@@ -163,6 +175,14 @@ main(int argc, char *argv[])
 	}
     }
 
+    files = argv + optind;
+    last = argc - optind - 1;
+
+    if (replaying) {
+	while (last >= 0 && !fexists(files[last]))
+	    --last;
+    }
+
     initscr();
     cbreak();
     noecho();
@@ -171,13 +191,11 @@ main(int argc, char *argv[])
     if (has_colors()) {
 	start_color();
 	for (ch = 0; ch < COLOR_PAIRS; ++ch) {
-	    short pair = ch % COLOR_PAIRS;
-	    init_pair(pair, COLOR_WHITE, ch % COLORS);
+	    short pair = (short) (ch % COLOR_PAIRS);
+	    init_pair(pair, COLOR_WHITE, (short) (ch % COLORS));
 	}
     }
 
-    files = argv + optind;
-    last = argc - optind - 1;
     if (replaying) {
 
 	/*
@@ -251,7 +269,7 @@ main(int argc, char *argv[])
 	getyx(stdscr, y, x);
 
 	while (!done) {
-	    switch (ch = get_command(which, last)) {
+	    switch (get_command(which, last)) {
 	    case 'n':
 		setup_next();
 		done = TRUE;
@@ -273,8 +291,8 @@ main(int argc, char *argv[])
 		    }
 		    ++which;
 		    if (has_colors()) {
-			short pair = which % COLOR_PAIRS;
-			bkgd(COLOR_PAIR(pair));
+			short pair = (short) (which % COLOR_PAIRS);
+			bkgd((chtype) COLOR_PAIR(pair));
 		    }
 		} else {
 		    beep();
@@ -314,3 +332,11 @@ main(int argc, char *argv[])
     }
     ExitProgram(EXIT_SUCCESS);
 }
+#else
+int
+main(int argc, char *argv[])
+{
+    printf("This program requires the screen-dump functions\n");
+    ExitProgram(EXIT_FAILURE);
+}
+#endif

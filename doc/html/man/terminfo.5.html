@@ -6,7 +6,7 @@
   * Note: this must be run through tbl before nroff.
   * The magic cookie on the first line triggers this under some man programs.
   ****************************************************************************
-  * Copyright (c) 1998-2004,2006 Free Software Foundation, Inc.              *
+  * Copyright (c) 1998-2009,2010 Free Software Foundation, Inc.              *
   *                                                                          *
   * Permission is hereby granted, free of charge, to any person obtaining a  *
   * copy of this software and associated documentation files (the            *
@@ -32,9 +32,9 @@
   * sale, use or other dealings in this Software without prior written       *
   * authorization.                                                           *
   ****************************************************************************
-  * @Id: terminfo.head,v 1.16 2007/03/04 00:09:46 tom Exp @
+  * @Id: terminfo.head,v 1.18 2010/07/31 16:08:48 tom Exp @
   * Head of terminfo man page ends here
-  * @Id: terminfo.tail,v 1.49 2008/02/16 20:57:43 tom Exp @
+  * @Id: terminfo.tail,v 1.53 2010/12/04 18:38:55 tom Exp @
   * Beginning of terminfo.tail file
   * This file is part of ncurses.
   * See "terminfo.head" for copyright.
@@ -78,7 +78,7 @@
        nals by giving a set of capabilities which they  have,  by
        specifying how to perform screen operations, and by speci-
        fying padding requirements and  initialization  sequences.
-       This describes <STRONG>ncurses</STRONG> version 5.6 (patch 20081011).
+       This describes <STRONG>ncurses</STRONG> version 5.9 (patch 20110404).
 
        Entries in <EM>terminfo</EM> consist of a sequence of `,' separated
        fields (embedded commas may be escaped with a backslash or
@@ -1325,7 +1325,7 @@
             where ci are conditions, bi are bodies.
 
             Use the <STRONG>-f</STRONG> option of <STRONG>tic</STRONG> or <STRONG>infocmp</STRONG> to see the struc-
-            ture  of  if-the-else's.  Some strings, e.g., <STRONG>sgr</STRONG> can
+            ture  of if-then-else's.  Some strings, e.g., <STRONG>sgr</STRONG> can
             be very complicated when written on one line.  The <STRONG>-f</STRONG>
             option  splits  the  string into lines with the parts
             indented.
@@ -1606,18 +1606,18 @@
        For example, the DEC vt220 supports most of the modes:
 
 
-           <STRONG>tparm</STRONG> <STRONG>parameter</STRONG>   <STRONG>attribute</STRONG>    <STRONG>escape</STRONG> <STRONG>sequence</STRONG>
+            <STRONG>tparm</STRONG> <STRONG>parameter</STRONG>   <STRONG>attribute</STRONG>    <STRONG>escape</STRONG> <STRONG>sequence</STRONG>
 
-           none              none         \E[0m
-           p1                standout     \E[0;1;7m
-           p2                underline    \E[0;4m
-           p3                reverse      \E[0;7m
-           p4                blink        \E[0;5m
-           p5                dim          not available
-           p6                bold         \E[0;1m
-           p7                invis        \E[0;8m
-           p8                protect      not used
-           p9                altcharset   ^O (off) ^N (on)
+            none              none         \E[0m
+            p1                standout     \E[0;1;7m
+            p2                underline    \E[0;4m
+            p3                reverse      \E[0;7m
+            p4                blink        \E[0;5m
+            p5                dim          not available
+            p6                bold         \E[0;1m
+            p7                invis        \E[0;8m
+            p8                protect      not used
+            p9                altcharset   ^O (off) ^N (on)
 
        We  begin each escape sequence by turning off any existing
        modes, since there is no quick way  to  determine  whether
@@ -1638,17 +1638,17 @@
        dencies yields
 
 
-         <STRONG>sequence</STRONG>    <STRONG>when</STRONG> <STRONG>to</STRONG> <STRONG>output</STRONG>     <STRONG>terminfo</STRONG> <STRONG>translation</STRONG>
+          <STRONG>sequence</STRONG>   <STRONG>when</STRONG> <STRONG>to</STRONG> <STRONG>output</STRONG>      <STRONG>terminfo</STRONG> <STRONG>translation</STRONG>
 
-         \E[0       always              \E[0
-         ;1         if p1 or p6         %?%p1%p6%|%t;1%;
-         ;4         if p2               %?%p2%|%t;4%;
-         ;5         if p4               %?%p4%|%t;5%;
+          \E[0       always              \E[0
+          ;1         if p1 or p6         %?%p1%p6%|%t;1%;
+          ;4         if p2               %?%p2%|%t;4%;
+          ;5         if p4               %?%p4%|%t;5%;
 
-         ;7         if p1 or p3         %?%p1%p3%|%t;7%;
-         ;8         if p7               %?%p7%|%t;8%;
-         m          always              m
-         ^N or ^O   if p9 ^N, else ^O   %?%p9%t^N%e^O%;
+          ;7         if p1 or p3         %?%p1%p3%|%t;7%;
+          ;8         if p7               %?%p7%|%t;8%;
+          m          always              m
+          ^N or ^O   if p9 ^N, else ^O   %?%p9%t^N%e^O%;
 
        Putting this all together into the sgr sequence gives:
 
@@ -1896,8 +1896,8 @@
        character set may be specified by the <STRONG>acsc</STRONG> capability.
 
 
-                <STRONG>Glyph</STRONG>             <STRONG>ACS</STRONG>            <STRONG>Ascii</STRONG>      <STRONG>VT100</STRONG>
-                 <STRONG>Name</STRONG>             <STRONG>Name</STRONG>           <STRONG>Default</STRONG>    <STRONG>Name</STRONG>
+       <STRONG>Glyph</STRONG>                      <STRONG>ACS</STRONG>            <STRONG>Ascii</STRONG>      <STRONG>VT100</STRONG>
+       <STRONG>Name</STRONG>                       <STRONG>Name</STRONG>           <STRONG>Default</STRONG>    <STRONG>Name</STRONG>
        UK pound sign              ACS_STERLING   f          }
        arrow pointing down        ACS_DARROW     v          .
        arrow pointing left        ACS_LARROW     &lt;          ,
@@ -2353,12 +2353,13 @@
 
 </PRE>
 <H2>SEE ALSO</H2><PRE>
-       <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>, <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>, <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>, <STRONG><A HREF="printf.3.html">printf(3)</A></STRONG>, <STRONG><A HREF="term.5.html">term(5)</A></STRONG>.
+       <STRONG><A HREF="tic.1m.html">tic(1m)</A></STRONG>,   <STRONG><A HREF="infocmp.1m.html">infocmp(1m)</A></STRONG>,  <STRONG><A HREF="ncurses.3x.html">curses(3x)</A></STRONG>,  <STRONG><A HREF="printf.3.html">printf(3)</A></STRONG>,  <STRONG><A HREF="term.5.html">term(5)</A></STRONG>.
+       <STRONG><A HREF="term_variables.3x.html">term_variables(3x)</A></STRONG>.
 
 
 </PRE>
 <H2>AUTHORS</H2><PRE>
-       Zeyd  M.  Ben-Halim,  Eric  S.  Raymond, Thomas E. Dickey.
+       Zeyd M. Ben-Halim, Eric  S.  Raymond,  Thomas  E.  Dickey.
        Based on pcurses by Pavel Curtis.
 
 
