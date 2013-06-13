@@ -180,15 +180,3 @@ LOCAL_SHARED_LIBRARIES := libdl
 LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_SHARED_LIBRARY)
-
-# ========================================================
-
-TERMINFO_SOURCE := $(LOCAL_PATH)/../lib/terminfo/
-TERMINFO_TARGET := $(TARGET_OUT_ETC)/terminfo
-$(TERMINFO_TARGET):
-		@echo "copy terminfo to /etc/"
-		@mkdir -p $@
-		@cp -r $(TERMINFO_SOURCE)/* $@
-ALL_DEFAULT_INSTALLED_MODULES += $(TERMINFO_TARGET)
-
-# ========================================================
