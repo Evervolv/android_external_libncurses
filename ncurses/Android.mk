@@ -86,7 +86,6 @@ LOCAL_SRC_FILES := \
 	base/safe_sprintf.c \
 	tty/tty_update.c \
 	trace/varargs.c \
-	base/memmove.c \
 	base/vsscanf.c \
 	base/lib_freeall.c \
 	expanded.c \
@@ -141,7 +140,6 @@ LOCAL_SRC_FILES := \
 	names.c \
 	tinfo/read_entry.c \
 	tinfo/read_termcap.c \
-	tinfo/setbuf.c \
 	tinfo/strings.c \
 	trace/trace_buf.c \
 	trace/trace_tries.c \
