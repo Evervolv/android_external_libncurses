@@ -46,14 +46,15 @@
 #ifndef NC_CONFIG_H
 #define NC_CONFIG_H
 
+#define PACKAGE "ncurses"
+#define NCURSES_VERSION "5.9"
+#define NCURSES_PATCHDATE 20150221
 #define SYSTEM_NAME "eabi"
-#define CC_HAS_PROTOS 1
 #if 0
 #include <stdlib.h>
 #endif
 #define HAVE_LONG_FILE_NAMES 1
 #define MIXEDCASE_FILENAMES 1
-#define USE_DATABASE 1
 #define TERMINFO_DIRS "/system/usr/share/terminfo"
 #define TERMINFO "/system/usr/share/terminfo"
 #define PURE_TERMINFO 1
@@ -64,13 +65,15 @@
 #define HAVE_LINK 1
 #define HAVE_SYMLINK 1
 #define USE_LINKS 1
-#define HAVE_FSEEKO 1
+#define HAVE_ASSUME_DEFAULT_COLORS 1
 #define HAVE_CURSES_VERSION 1
 #define HAVE_HAS_KEY 1
 #define HAVE_RESIZETERM 1
 #define HAVE_RESIZE_TERM 1
 #define HAVE_TERM_ENTRY_H 1
 #define HAVE_USE_DEFAULT_COLORS 1
+#define HAVE_USE_SCREEN 1
+#define HAVE_USE_WINDOW 1
 #define HAVE_WRESIZE 1
 #define NCURSES_EXT_FUNCS 1
 #define NCURSES_NO_PADDING 1
@@ -91,12 +94,11 @@
 #define USE_HASHMAP 1
 #define NCURSES_WRAP_PREFIX "_nc_"
 #define GCC_SCANF 1
-#define GCC_SCANFLIKE(fmt,var)  __attribute__((format(scanf,fmt,var)))
+#define GCC_SCANFLIKE(fmt,var) __attribute__((format(scanf,fmt,var)))
 #define GCC_PRINTF 1
 #define GCC_PRINTFLIKE(fmt,var) __attribute__((format(printf,fmt,var)))
 #define GCC_UNUSED __attribute__((unused))
 #define GCC_NORETURN __attribute__((noreturn))
-#define NDEBUG 1
 #define HAVE_NC_ALLOC_H 1
 #define HAVE_GETTIMEOFDAY 1
 #define STDC_HEADERS 1
@@ -115,22 +117,30 @@
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TIMES_H 1
+#define HAVE_TTYENT_H 1
 #define HAVE_UNISTD_H 1
 #define HAVE_WCTYPE_H 1
+#define HAVE_UNISTD_H 1
+#define HAVE_GETOPT_H 1
+#define HAVE_GETOPT_HEADER 1
 #define HAVE_SYS_TIME_SELECT 1
 #define SIG_ATOMIC_T volatile sig_atomic_t
 #define TYPEOF_CHTYPE long
 #define HAVE_GETCWD 1
 #define HAVE_GETEGID 1
 #define HAVE_GETEUID 1
-#define HAVE_ISSETUGID 1
+#define HAVE_GETOPT 1
+#define HAVE_GETTTYNAM 1
 #define HAVE_POLL 1
+#define HAVE_PUTENV 1
 #define HAVE_REMOVE 1
 #define HAVE_SELECT 1
 #define HAVE_SETBUF 1
 #define HAVE_SETBUFFER 1
+#define HAVE_SETENV 1
 #define HAVE_SETVBUF 1
 #define HAVE_SIGACTION 1
+#define HAVE_SIGVEC 1
 #define HAVE_STRDUP 1
 #define HAVE_STRSTR 1
 #define HAVE_TCGETPGRP 1
@@ -143,7 +153,6 @@
 #define HAVE_TCGETATTR 1
 #define HAVE_VSSCANF 1
 #define HAVE_MKSTEMP 1
-#define RETSIGTYPE void
 #define HAVE_SIZECHANGE 1
 #define HAVE_VA_COPY 1
 #define HAVE___VA_COPY 1
@@ -152,6 +161,8 @@
 #define HAVE_VFORK 1
 #define HAVE_WORKING_VFORK 1
 #define HAVE_WORKING_FORK 1
+#define USE_OPENPTY_HEADER <util.h>
+#define USE_XTERM_PTY 1
 #define CPP_HAS_STATIC_CAST 1
 #define HAVE_SLK_COLOR 1
 #define HAVE_PANEL_H 1
@@ -161,7 +172,8 @@
 #define HAVE_FORM_H 1
 #define HAVE_LIBFORM 1
 #define NCURSES_PATHSEP ':'
-#define NCURSES_VERSION_STRING "5.9.20110404"
+#define NCURSES_VERSION_STRING "5.9.20150221"
+#define NCURSES_OSPEED_COMPAT 1
 
 #include <ncurses_def.h>
 

@@ -140,6 +140,7 @@ LOCAL_SRC_FILES := \
 	names.c \
 	tinfo/read_entry.c \
 	tinfo/read_termcap.c \
+	tinfo/obsolete.c \
 	tinfo/strings.c \
 	trace/trace_buf.c \
 	trace/trace_tries.c \
