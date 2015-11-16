@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.146 2015/01/21 10:24:18 tom Exp $
+# $Id: Makefile.in,v 1.147 2015/08/05 23:15:41 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2013,2014 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2014,2015 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -65,7 +65,7 @@ bindir		= ${exec_prefix}/bin
 libdir		= ${exec_prefix}/lib
 includedir	= ${prefix}/include
 datarootdir	= ${prefix}/share
-datadir		= /system/usr/share
+datadir		= ${datarootdir}
 includesubdir	= /ncurses
 
 INCLUDEDIR	= $(DESTDIR)$(includedir)$(includesubdir)
@@ -86,27 +86,27 @@ INSTALL_LIB	= /usr/bin/install -c -m 644
 INSTALL_PROG	= ${INSTALL}
 INSTALL_DATA	= ${INSTALL} -m 644
 
-AR		= ar
+AR		= arm-linux-androideabi-ar
 ARFLAGS		= -curv
 AWK		= mawk
-LD		= ld
+LD		= arm-linux-androideabi-ld
 LN_S		= ln -s -f
-NM		= nm
+NM		= arm-linux-androideabi-nm
 
 CTAGS		= 
 ETAGS		= 
 
-CC		= gcc
-CPP		= gcc -E
-CFLAGS		= -nostdlib  --param max-inline-insns-single=1200
+CC		= /home/shade/dev/cm/13/prebuilts/clang/linux-x86/host/3.6/bin/clang
+CPP		= /home/shade/dev/cm/13/prebuilts/clang/linux-x86/host/3.6/bin/clang -E
+CFLAGS		= -target arm-linux-androideabi -I/home/shade/dev/cm/13/bionic/libc/include -I/home/shade/dev/cm/13/bionic/libc/kernel/uapi -I/home/shade/dev/cm/13/bionic/libc/arch-arm/include -I/home/shade/dev/cm/13/bionic/libc/kernel/uapi/asm-arm --sysroot=/home/shade/dev/cm/13/prebuilts/ndk/current/platforms/android-21/arch-arm -L/home/shade/dev/cm/13/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/lib/gcc/arm-linux-androideabi/4.9.x-google/armv7-a -I/home/shade/dev/cm/13/bionic/libm/include -I/home/shade/dev/cm/13/bionic/libm/include/arm -I/home/shade/dev/cm/13/external/libselinux/include -I/home/shade/dev/cm/13/system/core/include -I/home/shade/dev/cm/13/bionic/libc/dns/include -I.  --param max-inline-insns-single=1200
 
 INCDIR		= $(srcdir)/../include
-CPPFLAGS	= -DHAVE_CONFIG_H -I. -I../include -I/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/include/  -D_XOPEN_SOURCE=500 -DNDEBUG
+CPPFLAGS	= -DHAVE_CONFIG_H -I. -I../include   -D_XOPEN_SOURCE=500 -D_FILE_OFFSET_BITS=64  -DNDEBUG
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
 BUILD_CPPFLAGS	= -DHAVE_CONFIG_H -DUSE_BUILD_CC -I../ncurses -I$(srcdir) -I../include -I$(INCDIR)  
-BUILD_CC	= yes
+BUILD_CC	= gcc
 BUILD_CCFLAGS	= 
 BUILD_LDFLAGS	= 
 BUILD_LIBS	= 
@@ -121,12 +121,12 @@ CFLAGS_LIBTOOL	= $(CCFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) -g -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-CFLAGS_SHARED	= $(CCFLAGS) unknown
+CFLAGS_SHARED	= $(CCFLAGS) -fPIC
 
 CFLAGS_DEFAULT	= $(CFLAGS_NORMAL)
 
 LINK		= $(LIBTOOL)
-LDFLAGS		= -Wl,-rpath-link=/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/lib/ -L/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/lib/  -lc
+LDFLAGS		= -L/home/shade/dev/cm/13/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/lib/gcc/arm-linux-androideabi/4.9.x-google/armv7-a -L/home/shade/dev/cm/13/out/target/product/bacon/system/lib -lc -lselinux -lcutils  
 
 SHLIB_DIRS	= -L../lib
 SHLIB_LIST	= $(SHLIB_DIRS) 
@@ -136,27 +136,27 @@ TICS_LIST	= $(SHLIB_DIRS)
 RPATH_LIST	= ${libdir}
 RESULTING_SYMS	= 
 VERSIONED_SYMS	= 
-MK_SHARED_LIB	= echo unknown
+MK_SHARED_LIB	= ${CC} ${CFLAGS} -shared -Wl,-soname,`basename $@ .${REL_VERSION}`.${ABI_VERSION},-stats,-lc -o $@
 
-NCURSES_MAJOR	= 5
-NCURSES_MINOR	= 9
-REL_VERSION	= 5.9
-ABI_VERSION	= 5
+NCURSES_MAJOR	= 6
+NCURSES_MINOR	= 0
+REL_VERSION	= 6.0
+ABI_VERSION	= 6
 
-RANLIB		= ranlib
+RANLIB		= arm-linux-androideabi-ranlib
 
 LIBRARIES	=  ../lib/libncurses.a ../lib/libncurses_g.a
 
-LINT		= 
+LINT		= lint
 LINT_OPTS	= 
-LINT_LIBS	= -lncurses -lc
+LINT_LIBS	= -lncurses 
 
 FALLBACK_LIST	= 
 
 USE_BIG_STRINGS	= 1
 TERMINFO_CAPS	= $(top_srcdir)/include/Caps
 
-TERMINFO	= /system/usr/share/terminfo
+TERMINFO	= /system/etc/terminfo
 TERMINFO_SRC	= ${top_srcdir}/misc/terminfo.src
 TIC_PATH	= /usr/bin/tic
 
@@ -187,7 +187,7 @@ HEADER_DEPS	= \
 
 TEST_DEPS	= ../lib/libncurses.a
 TEST_ARGS	=  -L../lib -lform -lmenu -lpanel -lncurses   
-TEST_LDFLAGS	=  $(TEST_ARGS) -lc  -Wl,-rpath-link=/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/lib/ -L/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/lib/
+TEST_LDFLAGS	=  $(TEST_ARGS)   -L/home/shade/dev/cm/13/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/lib/gcc/arm-linux-androideabi/4.9.x-google/armv7-a -L/home/shade/dev/cm/13/out/target/product/bacon/system/lib -lc -lselinux -lcutils
 
 TEST_PROGS = \
 	captoinfo$x \
@@ -216,16 +216,16 @@ $(DESTDIR)$(libdir) :
 ../lib : ; mkdir $@
 
 ./fallback.c : $(tinfo)/MKfallback.sh
-	sh -e $(tinfo)/MKfallback.sh $(TERMINFO) $(TERMINFO_SRC) $(TIC_PATH) $(FALLBACK_LIST) >$@
+	$(SHELL) -e $(tinfo)/MKfallback.sh $(TERMINFO) $(TERMINFO_SRC) $(TIC_PATH) $(FALLBACK_LIST) >$@
 
 ./lib_gen.c : $(base)/MKlib_gen.sh ../include/curses.h
-	sh -e $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h >$@
+	$(SHELL) -e $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" generated <../include/curses.h >$@
 
 init_keytry.h: make_keys$(BUILD_EXEEXT) keys.list
 	./make_keys$(BUILD_EXEEXT) keys.list > $@
 
 keys.list :	$(tinfo)/MKkeys_list.sh
-	AWK=$(AWK) sh $(tinfo)/MKkeys_list.sh $(TERMINFO_CAPS) | sort >$@
+	AWK=$(AWK) $(SHELL) $(tinfo)/MKkeys_list.sh $(TERMINFO_CAPS) | sort >$@
 
 make_keys$(BUILD_EXEEXT) : \
 		$(tinfo)/make_keys.c \
@@ -238,14 +238,14 @@ make_hash$(BUILD_EXEEXT) : \
 	$(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(tinfo)/make_hash.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 
 ./expanded.c : $(srcdir)/curses.priv.h $(serial)/MKexpanded.sh
-	sh -e $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@
+	$(SHELL) -e $(serial)/MKexpanded.sh "$(CPP)" $(CPPFLAGS) > $@
 
 ./comp_captab.c: \
 		make_hash$(BUILD_EXEEXT) \
 		../include/hashsize.h \
 		$(tinfo)/MKcaptab.sh \
 		$(tinfo)/MKcaptab.awk
-	sh -e $(tinfo)/MKcaptab.sh $(AWK) $(USE_BIG_STRINGS) $(tinfo)/MKcaptab.awk $(srcdir)/../include/Caps > $@
+	$(SHELL) -e $(tinfo)/MKcaptab.sh $(AWK) $(USE_BIG_STRINGS) $(tinfo)/MKcaptab.awk $(srcdir)/../include/Caps > $@
 
 ./lib_keyname.c: keys.list $(base)/MKkeyname.awk
 	$(AWK) -f $(base)/MKkeyname.awk bigstrings=$(USE_BIG_STRINGS) keys.list > $@
@@ -290,7 +290,7 @@ realclean :: distclean
 test_progs : $(TEST_PROGS)
 
 ./link_test.c : $(base)/MKlib_gen.sh ../include/curses.h
-	sh -e $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" implemented <../include/curses.h >$@
+	$(SHELL) -e $(base)/MKlib_gen.sh "$(CPP) $(CPPFLAGS)" "$(AWK)" implemented <../include/curses.h >$@
 
 captoinfo$x : $(tinfo)/captoinfo.c $(TEST_DEPS)
 	 $(LIBTOOL_LINK) -o $@ $(CFLAGS_DEFAULT) -DMAIN $(tinfo)/captoinfo.c $(TEST_LDFLAGS)
@@ -316,9 +316,16 @@ link_test$x : ./link_test.c $(TEST_DEPS) \
 # The remainder of this file is automatically generated during configuration
 ###############################################################################
 
+# Generated by CF_LIB_RULES
+resulting.map: 
+	sed  -e "s/NCURSES\([WT]\+\)\?_/NCURSES\16_/g" -e "/deprecated in ABI6/d" <  >$@
+
+clean::
+	rm -f resulting.map
+
 # generated by mk-0th.awk
 #   libname:    ncurses
-#   subsets:    termlib+ext_tinfo+base+ext_funcs
+#   subsets:    ticlib+termlib+ext_tinfo+base+ext_funcs
 #   ticlib:     
 #   termlib:    
 
@@ -662,7 +669,7 @@ lintlib ::
 lint ::
 	$(LINT) $(LINT_OPTS) $(CPPFLAGS) $(NCURSES_SRC) $(LINT_LIBS)
 
-# generated by mk-1st.awk (subset=termlib+ext_tinfo+base+ext_funcs)
+# generated by mk-1st.awk (subset=ticlib+termlib+ext_tinfo+base+ext_funcs)
 #  name:          ncurses
 #  traces:        DEBUG
 #  MODEL:         NORMAL
@@ -670,20 +677,20 @@ lint ::
 #  model:         objects
 #  prefix:        lib
 #  suffix:        .a
-#  subset:        termlib+ext_tinfo+base+ext_funcs
+#  subset:        ticlib+termlib+ext_tinfo+base+ext_funcs
 #  driver:        no
-#  ShlibVer:      auto
+#  ShlibVer:      rel
 #  ShlibVerInfix: no
 #  SymLink:       ln -s -f
 #  TermlibRoot:   ncurses
 #  TermlibSuffix: .a
 #  ReLink:        no
-#  DoLinks:       no
+#  DoLinks:       yes
 #  rmSoLocs:      no
 #  ldconfig:      :
 #  overwrite:     no
 #  depend:        ../include/ncurses_cfg.h ./curses.priv.h
-#  host:          arm-unknown-eabi
+#  host:          arm-unknown-linux-androideabi
 
 NORMAL_OBJS = \
 	../objects/hardscroll$o \
@@ -820,6 +827,13 @@ NORMAL_OBJS = \
 	../objects/trim_sgr0$o \
 	../objects/unctrl$o \
 	../objects/visbuf$o \
+	../objects/alloc_entry$o \
+	../objects/captoinfo$o \
+	../objects/comp_expand$o \
+	../objects/comp_parse$o \
+	../objects/comp_scan$o \
+	../objects/parse_entry$o \
+	../objects/write_entry$o \
 	../objects/define_key$o \
 	../objects/hashed_db$o \
 	../objects/key_defined$o \
@@ -856,9 +870,9 @@ mostlyclean::
 #   model:      objects
 #   MODEL:      NORMAL
 #   echo:       yes
-#   subset:     termlib+ext_tinfo+base+ext_funcs
+#   subset:     ticlib+termlib+ext_tinfo+base+ext_funcs
 #   crenames:   yes
-#   cxxrenames: yes
+#   cxxrenames: 
 #   traces:     DEBUG
 #   srcdir:     .
 
@@ -1444,6 +1458,43 @@ mostlyclean::
 			$(INCDIR)/tic.h
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(trace)/visbuf.c -o ../objects/visbuf$o
 
+../objects/alloc_entry$o :	$(tinfo)/alloc_entry.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/alloc_entry.c -o ../objects/alloc_entry$o
+
+../objects/captoinfo$o :	$(tinfo)/captoinfo.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/captoinfo.c -o ../objects/captoinfo$o
+
+../objects/comp_expand$o :	$(tinfo)/comp_expand.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/comp_expand.c -o ../objects/comp_expand$o
+
+../objects/comp_parse$o :	$(tinfo)/comp_parse.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/comp_parse.c -o ../objects/comp_parse$o
+
+../objects/comp_scan$o :	$(tinfo)/comp_scan.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/comp_scan.c -o ../objects/comp_scan$o
+
+../objects/parse_entry$o :	$(tinfo)/parse_entry.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h \
+			../include/parametrized.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/parse_entry.c -o ../objects/parse_entry$o
+
+../objects/write_entry$o :	$(tinfo)/write_entry.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h \
+			$(INCDIR)/hashed_db.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(tinfo)/write_entry.c -o ../objects/write_entry$o
+
 ../objects/define_key$o :	$(base)/define_key.c \
 			$(HEADER_DEPS)
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(base)/define_key.c -o ../objects/define_key$o
@@ -1471,7 +1522,7 @@ mostlyclean::
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../ncurses/$(base)/version.c -o ../objects/version$o
 
 
-# generated by mk-1st.awk (subset=termlib+ext_tinfo+base+ext_funcs)
+# generated by mk-1st.awk (subset=ticlib+termlib+ext_tinfo+base+ext_funcs)
 #  name:          ncurses
 #  traces:        DEBUG
 #  MODEL:         DEBUG
@@ -1479,20 +1530,20 @@ mostlyclean::
 #  model:         obj_g
 #  prefix:        lib
 #  suffix:        _g.a
-#  subset:        termlib+ext_tinfo+base+ext_funcs
+#  subset:        ticlib+termlib+ext_tinfo+base+ext_funcs
 #  driver:        no
-#  ShlibVer:      auto
+#  ShlibVer:      rel
 #  ShlibVerInfix: no
 #  SymLink:       ln -s -f
 #  TermlibRoot:   ncurses
 #  TermlibSuffix: .a
 #  ReLink:        no
-#  DoLinks:       no
+#  DoLinks:       yes
 #  rmSoLocs:      no
 #  ldconfig:      :
 #  overwrite:     no
 #  depend:        ../include/ncurses_cfg.h ./curses.priv.h
-#  host:          arm-unknown-eabi
+#  host:          arm-unknown-linux-androideabi
 
 DEBUG_OBJS = \
 	../obj_g/hardscroll$o \
@@ -1637,6 +1688,13 @@ DEBUG_OBJS = \
 	../obj_g/trim_sgr0$o \
 	../obj_g/unctrl$o \
 	../obj_g/visbuf$o \
+	../obj_g/alloc_entry$o \
+	../obj_g/captoinfo$o \
+	../obj_g/comp_expand$o \
+	../obj_g/comp_parse$o \
+	../obj_g/comp_scan$o \
+	../obj_g/parse_entry$o \
+	../obj_g/write_entry$o \
 	../obj_g/define_key$o \
 	../obj_g/hashed_db$o \
 	../obj_g/key_defined$o \
@@ -1673,9 +1731,9 @@ mostlyclean::
 #   model:      obj_g
 #   MODEL:      DEBUG
 #   echo:       yes
-#   subset:     termlib+ext_tinfo+base+ext_funcs
+#   subset:     ticlib+termlib+ext_tinfo+base+ext_funcs
 #   crenames:   yes
-#   cxxrenames: yes
+#   cxxrenames: 
 #   traces:     DEBUG
 #   srcdir:     .
 
@@ -2292,6 +2350,43 @@ mostlyclean::
 			$(HEADER_DEPS) \
 			$(INCDIR)/tic.h
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(trace)/visbuf.c -o ../obj_g/visbuf$o
+
+../obj_g/alloc_entry$o :	$(tinfo)/alloc_entry.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/alloc_entry.c -o ../obj_g/alloc_entry$o
+
+../obj_g/captoinfo$o :	$(tinfo)/captoinfo.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/captoinfo.c -o ../obj_g/captoinfo$o
+
+../obj_g/comp_expand$o :	$(tinfo)/comp_expand.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/comp_expand.c -o ../obj_g/comp_expand$o
+
+../obj_g/comp_parse$o :	$(tinfo)/comp_parse.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/comp_parse.c -o ../obj_g/comp_parse$o
+
+../obj_g/comp_scan$o :	$(tinfo)/comp_scan.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/comp_scan.c -o ../obj_g/comp_scan$o
+
+../obj_g/parse_entry$o :	$(tinfo)/parse_entry.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h \
+			../include/parametrized.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/parse_entry.c -o ../obj_g/parse_entry$o
+
+../obj_g/write_entry$o :	$(tinfo)/write_entry.c \
+			$(HEADER_DEPS) \
+			$(INCDIR)/tic.h \
+			$(INCDIR)/hashed_db.h
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../ncurses/$(tinfo)/write_entry.c -o ../obj_g/write_entry$o
 
 ../obj_g/define_key$o :	$(base)/define_key.c \
 			$(HEADER_DEPS)

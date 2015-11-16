@@ -146,12 +146,16 @@ s/TH \<system 3 ""/TH system 3 ""/
 s/TH \<regcomp 3X ""/TH regcomp 3 ""/
 s/TH \<regexec 3X ""/TH regexec 3 ""/
 s/TH \<adacurses-config 1 ""/TH adacurses-config 1 ""/
+s/TH \<adacurses5-config 1 ""/TH adacurses5-config 1 ""/
+s/TH \<adacurses6-config 1 ""/TH adacurses6-config 1 ""/
 s/TH \<ncurses5-config 1 ""/TH ncurses5-config 1 ""/
 s/TH \<ncursesw5-config 1 ""/TH ncursesw5-config 1 ""/
+s/TH \<ncursest5-config 1 ""/TH ncursest5-config 1 ""/
+s/TH \<ncursestw5-config 1 ""/TH ncursestw5-config 1 ""/
 s/TH \<ncurses6-config 1 ""/TH ncurses6-config 1 ""/
 s/TH \<ncursesw6-config 1 ""/TH ncursesw6-config 1 ""/
 s/TH \<ncursest6-config 1 ""/TH ncursest6-config 1 ""/
-s/TH \<ncurseswt6-config 1 ""/TH ncurseswt6-config 1 ""/
+s/TH \<ncursestw6-config 1 ""/TH ncursestw6-config 1 ""/
 # Do the embedded references
 s/\<fBcaptoinfo\\fR(1M)/fBcaptoinfo\\fR(1)/
 s/\<fBclear\\fR(1)/fBclear\\fR(1)/
@@ -300,12 +304,16 @@ s/\<fBsystem\\fR(3)/fBsystem\\fR(3)/
 s/\<fBregcomp\\fR(3X)/fBregcomp\\fR(3)/
 s/\<fBregexec\\fR(3X)/fBregexec\\fR(3)/
 s/\<fBadacurses-config\\fR(1)/fBadacurses-config\\fR(1)/
+s/\<fBadacurses5-config\\fR(1)/fBadacurses5-config\\fR(1)/
+s/\<fBadacurses6-config\\fR(1)/fBadacurses6-config\\fR(1)/
 s/\<fBncurses5-config\\fR(1)/fBncurses5-config\\fR(1)/
 s/\<fBncursesw5-config\\fR(1)/fBncursesw5-config\\fR(1)/
+s/\<fBncursest5-config\\fR(1)/fBncursest5-config\\fR(1)/
+s/\<fBncursestw5-config\\fR(1)/fBncursestw5-config\\fR(1)/
 s/\<fBncurses6-config\\fR(1)/fBncurses6-config\\fR(1)/
 s/\<fBncursesw6-config\\fR(1)/fBncursesw6-config\\fR(1)/
 s/\<fBncursest6-config\\fR(1)/fBncursest6-config\\fR(1)/
-s/\<fBncurseswt6-config\\fR(1)/fBncurseswt6-config\\fR(1)/
+s/\<fBncursestw6-config\\fR(1)/fBncursestw6-config\\fR(1)/
 # Do the BxxxR references in the .NAME section
 s/^\\fBcaptoinfo\\f[RP] -/\\fBcaptoinfo\\fR -/
 s/^\\fBclear\\f[RP] -/\\fBclear\\fR -/
@@ -454,9 +462,13 @@ s/^\\fBsystem\\f[RP] -/\\fBsystem\\fR -/
 s/^\\fBregcomp\\f[RP] -/\\fBregcomp\\fR -/
 s/^\\fBregexec\\f[RP] -/\\fBregexec\\fR -/
 s/^\\fBadacurses-config\\f[RP] -/\\fBadacurses-config\\fR -/
+s/^\\fBadacurses5-config\\f[RP] -/\\fBadacurses5-config\\fR -/
+s/^\\fBadacurses6-config\\f[RP] -/\\fBadacurses6-config\\fR -/
 s/^\\fBncurses5-config\\f[RP] -/\\fBncurses5-config\\fR -/
 s/^\\fBncursesw5-config\\f[RP] -/\\fBncursesw5-config\\fR -/
+s/^\\fBncursest5-config\\f[RP] -/\\fBncursest5-config\\fR -/
+s/^\\fBncursestw5-config\\f[RP] -/\\fBncursestw5-config\\fR -/
 s/^\\fBncurses6-config\\f[RP] -/\\fBncurses6-config\\fR -/
 s/^\\fBncursesw6-config\\f[RP] -/\\fBncursesw6-config\\fR -/
 s/^\\fBncursest6-config\\f[RP] -/\\fBncursest6-config\\fR -/
-s/^\\fBncurseswt6-config\\f[RP] -/\\fBncurseswt6-config\\fR -/
+s/^\\fBncursestw6-config\\f[RP] -/\\fBncursestw6-config\\fR -/

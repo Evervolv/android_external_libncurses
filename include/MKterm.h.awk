@@ -44,7 +44,7 @@ BEGIN		{
 		    print  "#define NCURSES_TERM_H_incl 1"
 		    print  ""
 		    print  "#undef  NCURSES_VERSION"
-		    print  "#define NCURSES_VERSION \"5.9\""
+		    print  "#define NCURSES_VERSION \"6.0\""
 		    print  ""
 		    print  "#include <ncurses_dll.h>"
 		    print  ""

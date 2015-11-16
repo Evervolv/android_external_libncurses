@@ -13,8 +13,8 @@
 #define BSD_TPUTS 0
 #endif
 
-#ifndef CC_HAS_PROTOS
-#define CC_HAS_PROTOS 0
+#ifndef CGETENT_CONST
+#define CGETENT_CONST /* nothing */
 #endif
 
 #ifndef CPP_HAS_PARAM_INIT
@@ -43,6 +43,10 @@
 
 #ifndef GCC_UNUSED
 #define GCC_UNUSED /* nothing */
+#endif
+
+#ifndef HAVE_ASSUME_DEFAULT_COLORS
+#define HAVE_ASSUME_DEFAULT_COLORS 0
 #endif
 
 #ifndef HAVE_BIG_CORE
@@ -155,6 +159,10 @@
 
 #ifndef HAVE_HAS_KEY
 #define HAVE_HAS_KEY 0
+#endif
+
+#ifndef HAVE_INTTYPES_H
+#define HAVE_INTTYPES_H 0
 #endif
 
 #ifndef HAVE_IOSTREAM
@@ -289,6 +297,10 @@
 #define HAVE_PURIFY 0
 #endif
 
+#ifndef HAVE_PUTENV
+#define HAVE_PUTENV 0
+#endif
+
 #ifndef HAVE_PUTWC
 #define HAVE_PUTWC 0
 #endif
@@ -341,6 +353,10 @@
 #define HAVE_SETBUFFER 0
 #endif
 
+#ifndef HAVE_SETENV
+#define HAVE_SETENV 0
+#endif
+
 #ifndef HAVE_SETUPTERM
 #define HAVE_SETUPTERM 1
 #endif
@@ -373,8 +389,24 @@
 #define HAVE_SLK_INIT 1
 #endif
 
+#ifndef HAVE_SNPRINTF
+#define HAVE_SNPRINTF 0
+#endif
+
+#ifndef HAVE_STDINT_H
+#define HAVE_STDINT_H 0
+#endif
+
 #ifndef HAVE_STRDUP
 #define HAVE_STRDUP 0
+#endif
+
+#ifndef HAVE_STRLCAT
+#define HAVE_STRLCAT 0
+#endif
+
+#ifndef HAVE_STRLCPY
+#define HAVE_STRLCPY 0
 #endif
 
 #ifndef HAVE_STRSTR
@@ -493,6 +525,10 @@
 #define HAVE_TYPE_SIGACTION 0
 #endif
 
+#ifndef HAVE_UNCTRL_H
+#define HAVE_UNCTRL_H 1
+#endif
+
 #ifndef HAVE_UNISTD_H
 #define HAVE_UNISTD_H 0
 #endif
@@ -505,8 +541,32 @@
 #define HAVE_USE_DEFAULT_COLORS 0
 #endif
 
+#ifndef HAVE_USE_ENV
+#define HAVE_USE_ENV 1
+#endif
+
+#ifndef HAVE_USE_EXTENDED_NAMES
+#define HAVE_USE_EXTENDED_NAMES 0
+#endif
+
+#ifndef HAVE_USE_SCREEN
+#define HAVE_USE_SCREEN 0
+#endif
+
+#ifndef HAVE_USE_WINDOW
+#define HAVE_USE_WINDOW 0
+#endif
+
 #ifndef HAVE_VFSCANF
 #define HAVE_VFSCANF 0
+#endif
+
+#ifndef HAVE_VIDPUTS
+#define HAVE_VIDPUTS 1
+#endif
+
+#ifndef HAVE_VID_PUTS
+#define HAVE_VID_PUTS 1
 #endif
 
 #ifndef HAVE_VSNPRINTF
@@ -577,12 +637,24 @@
 #define NCURSES_EXT_FUNCS 0
 #endif
 
+#ifndef NCURSES_EXT_PUTWIN
+#define NCURSES_EXT_PUTWIN 0
+#endif
+
 #ifndef NCURSES_NO_PADDING
 #define NCURSES_NO_PADDING 0
 #endif
 
+#ifndef NCURSES_OSPEED_COMPAT
+#define NCURSES_OSPEED_COMPAT 0
+#endif
+
 #ifndef NCURSES_PATHSEP
 #define NCURSES_PATHSEP ':'
+#endif
+
+#ifndef NCURSES_WIDECHAR
+#define NCURSES_WIDECHAR 0
 #endif
 
 #ifndef NEED_PTEM_H
@@ -595,10 +667,6 @@
 
 #ifndef PURE_TERMINFO
 #define PURE_TERMINFO 0
-#endif
-
-#ifndef RETSIGTYPE
-#define RETSIGTYPE 0
 #endif
 
 #ifndef STDC_HEADERS
@@ -635,10 +703,6 @@
 
 #ifndef USE_COLORFGBG
 #define USE_COLORFGBG 0
-#endif
-
-#ifndef USE_DATABASE
-#define USE_DATABASE 0
 #endif
 
 #ifndef USE_GETCAP
@@ -701,16 +765,16 @@
 #define USE_SIGWINCH 0
 #endif
 
+#ifndef USE_STRING_HACKS
+#define USE_STRING_HACKS 0
+#endif
+
 #ifndef USE_SYMLINKS
 #define USE_SYMLINKS 0
 #endif
 
 #ifndef USE_SYSMOUSE
 #define USE_SYSMOUSE 0
-#endif
-
-#ifndef USE_TERMCAP
-#define USE_TERMCAP 0
 #endif
 
 #ifndef USE_WEAK_SYMBOLS

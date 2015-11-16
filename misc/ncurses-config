@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: ncurses-config.in,v 1.32 2015/02/21 21:36:16 tom Exp $
+# $Id: ncurses-config.in,v 1.35 2015/04/22 00:54:19 tom Exp $
 ##############################################################################
 # Copyright (c) 2006-2012,2015 Free Software Foundation, Inc.                #
 #                                                                            #
@@ -42,12 +42,14 @@ bindir="${exec_prefix}/bin"
 includedir="${prefix}/include"
 libdir="${exec_prefix}/lib"
 datarootdir="${prefix}/share"
-datadir="/system/usr/share"
+datadir="${datarootdir}"
 mandir="${datarootdir}/man"
 
 THIS="ncurses"
 TINFO_LIB="ncurses"
 RPATH_LIST="${libdir}"
+
+includesubdir="${prefix}/include/${THIS}"
 
 # Ensure that RPATH_LIST contains only absolute pathnames, if it is nonempty.
 # We cannot filter it out within the build-process since the variable is used
@@ -99,7 +101,7 @@ while test $# -gt 0; do
 	--cflags)
 		INCS=" -D_XOPEN_SOURCE=500"
 		if test "xno" = xno ; then
-			INCS="$INCS -I${includedir}/${THIS}"
+			INCS="$INCS -I${includesubdir}"
 		fi
 		if test "${includedir}" != /usr/include ; then
 			INCS="$INCS -I${includedir}"
@@ -117,23 +119,23 @@ ENDECHO
 		fi
 		if test ncurses = ncurses ; then
 		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
-			$LIBDIR  -l${THIS} -lc
+			$LIBDIR  -l${THIS} 
 ENDECHO
 		else
 		sed -e 's,^[ ]*,,' -e 's, [ ]*, ,g' -e 's,[ ]*$,,' <<-ENDECHO
-			$LIBDIR  -l${THIS} -l${TINFO_LIB} -lc
+			$LIBDIR  -l${THIS} -l${TINFO_LIB} 
 ENDECHO
 		fi
 		;;
 	# identification
 	--version)
-		echo "5.9.20150221"
+		echo "6.0.20150808"
 		;;
 	--abi-version)
-		echo "5"
+		echo "6"
 		;;
 	--mouse-version)
-		echo "1"
+		echo "2"
 		;;
 	# locations
 	--bindir)
@@ -152,10 +154,10 @@ ENDECHO
 		echo "${mandir}"
 		;;
 	--terminfo)
-		echo "/system/usr/share/terminfo"
+		echo "/system/etc/terminfo"
 		;;
 	--terminfo-dirs)
-		echo "/system/usr/share/terminfo"
+		echo "/system/etc/terminfo"
 		;;
 	--termpath)
 		echo ""
@@ -163,7 +165,7 @@ ENDECHO
 	# general info
 	--help)
 		cat <<ENDHELP
-Usage: ${THIS}-config [options]
+Usage: `basename $0` [options]
 
 Options:
   --prefix           echos the package-prefix of ${THIS}

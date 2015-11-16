@@ -49,9 +49,9 @@ echo '** Building terminfo database, please wait...'
 : ${top_srcdir:=..}
 : ${srcdir:=.}
 : ${datarootdir:=${prefix}/share}
-: ${datadir:=/system/usr/share}
+: ${datadir:=${datarootdir}}
 : ${TIC_PATH:=/usr/bin/tic}
-: ${ticdir:=/system/usr/share/terminfo}
+: ${ticdir:=/system/etc/terminfo}
 : ${source:=${top_srcdir}/misc/terminfo.src}
 : ${LN_S:="ln -s -f"}
 : ${cross_compiling:=no}
@@ -101,7 +101,7 @@ SHLIB_PATH=$PATH
 export SHLIB_PATH
 
 # set a variable to simplify environment update in shlib
-SHLIB_HOST=eabi
+SHLIB_HOST=linux-androideabi
 export SHLIB_HOST
 
 # don't use user's TERMINFO variable
