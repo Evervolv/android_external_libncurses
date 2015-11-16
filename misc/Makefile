@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.62 2014/09/23 22:12:42 tom Exp $
+# $Id: Makefile.in,v 1.63 2015/08/05 23:15:41 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2013,2014 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2014,2015 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -57,13 +57,13 @@ exec_prefix	= ${prefix}
 bindir		= ${exec_prefix}/bin
 libdir		= ${exec_prefix}/lib
 datarootdir	= ${prefix}/share
-datadir		= /system/usr/share
+datadir		= ${datarootdir}
 includesubdir	= /ncurses
 
 INCLUDEDIR	= $(DESTDIR)$(includedir)$(includesubdir)
 
 tabsetdir	= $(datadir)/tabset
-ticdir		= /system/usr/share/terminfo
+ticdir		= /system/etc/terminfo
 ticfile		= $(ticdir).db
 source		= ${top_srcdir}/misc/terminfo.src
 
@@ -105,7 +105,7 @@ install.data :	terminfo.tmp \
 			$(INSTALL_DATA) $$i $(DESTDIR)$(tabsetdir)/$$i; \
 			fi; done'
 
-NCURSES_CONFIG	= ncurses5-config
+NCURSES_CONFIG	= ncurses6-config
 
 install.libs :: $(DESTDIR)$(bindir) ncurses-config
 	$(INSTALL_SCRIPT) ncurses-config $(DESTDIR)$(bindir)/$(NCURSES_CONFIG)

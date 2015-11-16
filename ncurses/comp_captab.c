@@ -1634,7 +1634,7 @@ static const char cap_names_text[] = \
 "AB\0" "xl\0" "dv\0" "ci\0" "s0\0" "s1\0" "s2\0" "s3\0" "ML\0" "MT\0" \
 "Xy\0" "Zz\0" "Yv\0" "Yw\0" "Yx\0" "Yy\0" "Yz\0" "YZ\0" "S1\0" "S2\0" \
 "S3\0" "S4\0" "S5\0" "S6\0" "S7\0" "S8\0" "Xh\0" "Xl\0" "Xo\0" "Xr\0" \
-"Xt\0" "Xv\0" "sA\0" "sL\0" "i2\0" "rs\0" "ug\0" "bs\0" "ns\0" "nc\0" \
+"Xt\0" "Xv\0" "sA\0" "YI\0" "i2\0" "rs\0" "ug\0" "bs\0" "ns\0" "nc\0" \
 "dC\0" "dN\0" "nl\0" "bc\0" "MT\0" "NL\0" "dB\0" "dT\0" "kn\0" "ko\0" \
 "ma\0" "pt\0" "xr\0" "G2\0" "G3\0" "G1\0" "G4\0" "GR\0" "GL\0" "GU\0" \
 "GD\0" "GH\0" "GV\0" "GC\0" "ml\0" "mu\0" "bx\0" ;
@@ -2905,7 +2905,7 @@ static const HashValue _nc_cap_hash_table[995] =
 	 25,
 	 -1,
 	 -1,
-	463,
+	 -1,
 	 50,
 	232,
 	 -1,
@@ -3102,7 +3102,7 @@ static const HashValue _nc_cap_hash_table[995] =
 	283,
 	 -1,
 	269,
-	 -1,
+	463,
 	382,
 	249,
 	 -1,
@@ -3305,12 +3305,12 @@ static const struct alias *
 _nc_build_alias(struct alias **actual,
 		const alias_table_data *source,
 		const char *strings,
-		unsigned tablesize)
+		size_t tablesize)
 {
     if (*actual == 0) {
 	*actual = typeCalloc(struct alias, tablesize + 1);
 	if (*actual != 0) {
-	    unsigned n;
+	    size_t n;
 	    for (n = 0; n < tablesize; ++n) {
 		add_alias(from);
 		add_alias(to);
@@ -3384,7 +3384,7 @@ tcap_hash(const char *string)
 static int
 compare_tcap_names(const char *a, const char *b)
 {
-    return !strncmp(a, b, TCAP_LEN);
+    return !strncmp(a, b, (size_t) TCAP_LEN);
 }
 
 static int

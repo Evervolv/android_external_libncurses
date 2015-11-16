@@ -113,7 +113,7 @@ static const char unctrl_blob[] =
     "\370\0\371\0\372\0\373\0\374\0\375\0\376\0\377\0"
 ;
 
-	int check = ChCharOf(ch);
+	int check = (int) ChCharOf(ch);
 	const char *result;
 
 	if (check >= 0 && check < (int)SIZEOF(unctrl_table)) {

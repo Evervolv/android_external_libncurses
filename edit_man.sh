@@ -3,19 +3,19 @@
 
 prefix="/system"
 datarootdir="${prefix}/share"
-datadir="/system/usr/share"
+datadir="${datarootdir}"
 
-NCURSES_MAJOR="5"
-NCURSES_MINOR="9"
-NCURSES_PATCH="20150221"
+NCURSES_MAJOR="6"
+NCURSES_MINOR="0"
+NCURSES_PATCH="20150808"
 
 NCURSES_OSPEED="short"
-TERMINFO="/system/usr/share/terminfo"
+TERMINFO="/system/etc/terminfo"
 
 INSTALL="/usr/bin/install -c"
 INSTALL_DATA="${INSTALL} -m 644"
 
-transform="s,^,arm-eabi-,"
+transform="s,x,x,"
 
 TMP=${TMPDIR:=/tmp}/man$$
 trap "rm -f $TMP" 0 1 2 5 15
@@ -36,7 +36,7 @@ shift || exit 1
 if test "$form" = normal ; then
 	if test "no" = yes ; then
 	if test "no" = no ; then
-		sh $0 format $verb $mandir $srcdir $*
+		/bin/sh $0 format $verb $mandir $srcdir $*
 		exit 0
 	fi
 	fi
@@ -49,9 +49,9 @@ fi
 
 # process the list of source-files
 for i in $* ; do
-case $i in #(vi
-*.orig|*.rej) ;; #(vi
-*.[0-9]*)
+case $i in
+(*.orig|*.rej) ;;
+(*.[0-9]*)
 	section=`expr "$i" : '.*\.\([0-9]\)[xm]*'`;
 	if test $verb = installing ; then
 	if test ! -d $cf_subdir${section} ; then
@@ -60,8 +60,8 @@ case $i in #(vi
 	fi
 
 	# replace variables in man page
-	if test ! -f /home/elginsk8r/android/system/external/libncurses/man_alias.sed ; then
-cat >>/home/elginsk8r/android/system/external/libncurses/man_alias.sed <<-CF_EOF2
+	if test ! -f /home/shade/dev/cm/13/external/libncurses/man_alias.sed ; then
+cat >>/home/shade/dev/cm/13/external/libncurses/man_alias.sed <<-CF_EOF2
 		s,@DATADIR@,$datadir,g
 		s,@TERMINFO@,${TERMINFO:="no default value"},g
 		s,@TERMINFO_DIRS@,${TERMINFO_DIRS:="no default value"},g
@@ -69,17 +69,17 @@ cat >>/home/elginsk8r/android/system/external/libncurses/man_alias.sed <<-CF_EOF
 		s,@NCURSES_MINOR@,${NCURSES_MINOR:="no default value"},g
 		s,@NCURSES_PATCH@,${NCURSES_PATCH:="no default value"},g
 		s,@NCURSES_OSPEED@,${NCURSES_OSPEED:="no default value"},g
-s,@CAPTOINFO@,arm-eabi-captoinfo,g
-s,@CLEAR@,arm-eabi-clear,g
-s,@INFOCMP@,arm-eabi-infocmp,g
-s,@INFOTOCAP@,arm-eabi-infotocap,g
-s,@TABS@,arm-eabi-tabs,g
-s,@TIC@,arm-eabi-tic,g
-s,@TOE@,arm-eabi-toe,g
-s,@TPUT@,arm-eabi-tput,g
-s,@TSET@,arm-eabi-tset,g
+s,@CAPTOINFO@,captoinfo,g
+s,@CLEAR@,clear,g
+s,@INFOCMP@,infocmp,g
+s,@INFOTOCAP@,infotocap,g
+s,@TABS@,tabs,g
+s,@TIC@,tic,g
+s,@TOE@,toe,g
+s,@TPUT@,tput,g
+s,@TSET@,tset,g
 CF_EOF2
-		echo "...made /home/elginsk8r/android/system/external/libncurses/man_alias.sed"
+		echo "...made /home/shade/dev/cm/13/external/libncurses/man_alias.sed"
 	fi
 
 	aliases=
@@ -92,16 +92,16 @@ CF_EOF2
 	fi
 	nCurses=ignore.3x
 	test yes = yes && nCurses=ncurses.3x
-	aliases=`sed -f $top_srcdir/man/manlinks.sed $inalias |sed -f /home/elginsk8r/android/system/external/libncurses/man_alias.sed | sort -u; test $inalias = $nCurses && echo curses`
-	cf_target=`grep "^$cf_source" /home/elginsk8r/android/system/external/libncurses/man/man_db.renames | mawk '{print $2}'`
+	aliases=`sed -f $top_srcdir/man/manlinks.sed $inalias |sed -f /home/shade/dev/cm/13/external/libncurses/man_alias.sed | sort -u; test $inalias = $nCurses && echo curses`
+	cf_target=`grep "^$cf_source" /home/shade/dev/cm/13/external/libncurses/man/man_db.renames | mawk '{print $2}'`
 	if test -z "$cf_target" ; then
 		echo '? missing rename for '$cf_source
 		cf_target="$cf_source"
 	fi
 	cf_target="$cf_subdir${section}/${cf_target}"
 
-	sed	-f /home/elginsk8r/android/system/external/libncurses/man_alias.sed \
-		< $i | sed -f /home/elginsk8r/android/system/external/libncurses/edit_man.sed >$TMP
+	sed	-f /home/shade/dev/cm/13/external/libncurses/man_alias.sed \
+		< $i | sed -f /home/shade/dev/cm/13/external/libncurses/edit_man.sed >$TMP
 if test $cf_tables = yes ; then
 	tbl $TMP >$TMP.out
 	mv $TMP.out $TMP
@@ -186,7 +186,7 @@ done
 
 if test no = yes ; then
 if test $form != format ; then
-	sh $0 format $verb $mandir $srcdir $*
+	/bin/sh $0 format $verb $mandir $srcdir $*
 fi
 fi
 

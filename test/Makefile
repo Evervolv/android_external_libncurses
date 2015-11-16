@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.114 2014/11/15 00:46:05 tom Exp $
+# $Id: Makefile.in,v 1.115 2015/08/05 23:15:41 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2013,2014 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2014,2015 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -69,17 +69,17 @@ LIBTOOL_LINK	= ${CC}
 
 INSTALL		= /usr/bin/install -c
 INSTALL_PROG	= ${INSTALL}
-transform	= s,^,arm-eabi-,
+transform	= s,x,x,
 TRANSFORM	= sed 's/$x$$//'|sed '$(transform)'|sed 's/$$/$x/'
 
 CTAGS		= 
 ETAGS		= 
 
-CC		= gcc
-CPP		= gcc -E
+CC		= /home/shade/dev/cm/13/prebuilts/clang/linux-x86/host/3.6/bin/clang
+CPP		= /home/shade/dev/cm/13/prebuilts/clang/linux-x86/host/3.6/bin/clang -E
 
-CFLAGS		= -nostdlib  --param max-inline-insns-single=1200 
-CPPFLAGS	= -I. -I$(srcdir) -I../test -DHAVE_CONFIG_H -I. -I../include -I/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/include/  -D_XOPEN_SOURCE=500 -DNDEBUG
+CFLAGS		= -target arm-linux-androideabi -I/home/shade/dev/cm/13/bionic/libc/include -I/home/shade/dev/cm/13/bionic/libc/kernel/uapi -I/home/shade/dev/cm/13/bionic/libc/arch-arm/include -I/home/shade/dev/cm/13/bionic/libc/kernel/uapi/asm-arm --sysroot=/home/shade/dev/cm/13/prebuilts/ndk/current/platforms/android-21/arch-arm -L/home/shade/dev/cm/13/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/lib/gcc/arm-linux-androideabi/4.9.x-google/armv7-a -I/home/shade/dev/cm/13/bionic/libm/include -I/home/shade/dev/cm/13/bionic/libm/include/arm -I/home/shade/dev/cm/13/external/libselinux/include -I/home/shade/dev/cm/13/system/core/include -I/home/shade/dev/cm/13/bionic/libc/dns/include -I.  --param max-inline-insns-single=1200 
+CPPFLAGS	= -I. -I$(srcdir) -I../test -DHAVE_CONFIG_H -I. -I../include   -D_XOPEN_SOURCE=500 -D_FILE_OFFSET_BITS=64  -DNDEBUG
 
 CCFLAGS		= $(CPPFLAGS) $(CFLAGS)
 
@@ -87,21 +87,21 @@ CFLAGS_LIBTOOL	= $(CCFLAGS)
 CFLAGS_NORMAL	= $(CCFLAGS)
 CFLAGS_DEBUG	= $(CCFLAGS) -g -DTRACE
 CFLAGS_PROFILE	= $(CCFLAGS) -pg
-CFLAGS_SHARED	= $(CCFLAGS) unknown
+CFLAGS_SHARED	= $(CCFLAGS) -fPIC
 
 CFLAGS_DEFAULT	= $(CFLAGS_NORMAL)
 
-REL_VERSION	= 5.9
-ABI_VERSION	= 5
-LOCAL_LIBDIR	= /home/elginsk8r/android/system/external/libncurses/lib
+REL_VERSION	= 6.0
+ABI_VERSION	= 6
+LOCAL_LIBDIR	= /home/shade/dev/cm/13/external/libncurses/lib
 LOCAL_LIBS	= ../lib/libform.a ../lib/libmenu.a ../lib/libpanel.a ../lib/libncurses.a 
 MATH_LIB	= -lm
-TEST_LIBS	= -lutil
+TEST_LIBS	= 
 
-LD		= ld
+LD		= arm-linux-androideabi-ld
 LINK		=  $(LIBTOOL_LINK) $(CFLAGS)
 
-LDFLAGS		=   -Wl,-rpath-link=/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/lib/ -L/home/elginsk8r/android/system/prebuilts/ndk/current/platforms/android-9/arch-arm/usr/lib/
+LDFLAGS		=   -L/home/shade/dev/cm/13/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/lib/gcc/arm-linux-androideabi/4.9.x-google/armv7-a -L/home/shade/dev/cm/13/out/target/product/bacon/system/lib -lc -lselinux -lcutils
 
 LDFLAGS_LIBTOOL	= $(LDFLAGS) $(CFLAGS_LIBTOOL)
 LDFLAGS_NORMAL	= $(LDFLAGS) $(CFLAGS_NORMAL)
@@ -112,24 +112,24 @@ LDFLAGS_SHARED	= $(LDFLAGS) $(CFLAGS_SHARED)
 TEST_ARGS	=  -L../lib -lform -lmenu -lpanel -lncurses  
 
 # use these for linking with all of the libraries
-LIBS_DEFAULT	= $(TEST_ARGS) -lc $(TEST_LIBS) $(MATH_LIB)
+LIBS_DEFAULT	= $(TEST_ARGS)  $(TEST_LIBS) $(MATH_LIB)
 LDFLAGS_DEFAULT	= $(LDFLAGS_NORMAL) $(LIBS_DEFAULT)
 
 # use these for linking with the (n)curses library and possibly pthreads
-LIBS_THREADS	= `echo "$(TEST_ARGS) -lc" | sed -e 's/-lform.*-lpanel[^ ]*//'` $(TEST_LIBS) $(MATH_LIB) 
+LIBS_THREADS	= `echo "$(TEST_ARGS) " | sed -e 's/-lform.*-lpanel[^ ]*//'` $(TEST_LIBS) $(MATH_LIB) 
 LDFLAGS_THREADS	= $(LDFLAGS_NORMAL) $(LIBS_THREADS)
 
 # use these for linking with the (n)curses library
-LIBS_CURSES	= `echo "$(TEST_ARGS) -lc" | sed -e 's/-lform.*-lpanel[^ ]*//'` $(TEST_LIBS) $(MATH_LIB)
+LIBS_CURSES	= `echo "$(TEST_ARGS) " | sed -e 's/-lform.*-lpanel[^ ]*//'` $(TEST_LIBS) $(MATH_LIB)
 LDFLAGS_CURSES	= $(LDFLAGS_NORMAL) $(LIBS_CURSES)
 
 # use these for linking with the tinfo library if we have it, or curses library if not
-LIBS_TINFO	=  -lncurses  -lc $(TEST_LIBS) $(MATH_LIB)
+LIBS_TINFO	=  -lncurses   $(TEST_LIBS) $(MATH_LIB)
 LDFLAGS_TINFO	= -L../lib $(LDFLAGS_NORMAL) $(LIBS_TINFO)
 
-LINT		= 
+LINT		= lint
 LINT_OPTS	= 
-LINT_LIBS	= -lform -lmenu -lpanel -lncurses -lc
+LINT_LIBS	= -lform -lmenu -lpanel -lncurses 
 
 HEADER_DEPS	= \
 	../include/curses.h \
@@ -194,6 +194,7 @@ TESTS	= $(destdir)background$x \
 	  $(destdir)test_instr$x \
 	  $(destdir)test_inwstr$x \
 	  $(destdir)test_opaque$x \
+	  $(destdir)test_setupterm$x \
 	  $(destdir)test_vid_puts$x \
 	  $(destdir)test_vidputs$x \
 	  $(destdir)testaddch$x \
@@ -225,7 +226,7 @@ mostlyclean ::
 
 clean :: mostlyclean
 	-$(SHELL) -c "if test -n '$x' ; then $(MAKE) clean x=''; fi"
-	-rm -rf *$o screendump *.lis $(TESTS) .libs
+	-rm -rf *$o screendump *.lis $(TESTS) .libs *.dSYM
 
 distclean :: clean
 	-rm -f Makefile ncurses_cfg.h config.status config.log
@@ -405,6 +406,9 @@ $(destdir)test_inwstr$x: $(MODEL)/test_inwstr$o $(LOCAL_LIBS)
 $(destdir)test_opaque$x: $(MODEL)/test_opaque$o $(LOCAL_LIBS)
 	$(LINK) -o $@ $(MODEL)/test_opaque$o $(LDFLAGS_CURSES)
 
+$(destdir)test_setupterm$x: $(MODEL)/test_setupterm$o $(LOCAL_LIBS)
+	$(LINK) -o $@ $(MODEL)/test_setupterm$o $(LDFLAGS_CURSES)
+
 $(destdir)test_vid_puts$x: $(MODEL)/test_vid_puts$o $(LOCAL_LIBS)
 	$(LINK) -o $@ $(MODEL)/test_vid_puts$o $(LDFLAGS_CURSES)
 
@@ -429,9 +433,16 @@ $(destdir)worm$x: $(MODEL)/worm$o $(LOCAL_LIBS)
 $(destdir)xmas$x: $(MODEL)/xmas$o $(LOCAL_LIBS)
 	$(LINK) -o $@ $(MODEL)/xmas$o $(LDFLAGS_CURSES)
 
+# Generated by CF_LIB_RULES
+resulting.map: 
+	sed  -e "s/NCURSES\([WT]\+\)\?_/NCURSES\16_/g" -e "/deprecated in ABI6/d" <  >$@
+
+clean::
+	rm -f resulting.map
+
 # generated by mk-0th.awk
 #   libname:    test
-#   subsets:    termlib+ext_tinfo+base+ext_funcs
+#   subsets:    ticlib+termlib+ext_tinfo+base+ext_funcs
 
 .SUFFIXES: .c .cc .h .i .ii
 .c.i :
@@ -499,6 +510,7 @@ C_SRC = \
 	$(srcdir)/test_instr.c \
 	$(srcdir)/test_inwstr.c \
 	$(srcdir)/test_opaque.c \
+	$(srcdir)/test_setupterm.c \
 	$(srcdir)/test_vid_puts.c \
 	$(srcdir)/test_vidputs.c \
 	$(srcdir)/testaddch.c \
@@ -511,7 +523,7 @@ C_SRC = \
 lintlib :
 	@echo no action needed
 
-# generated by mk-1st.awk (subset=termlib+ext_tinfo+base+ext_funcs)
+# generated by mk-1st.awk (subset=ticlib+termlib+ext_tinfo+base+ext_funcs)
 #  name:          test
 #  traces:        DEBUG
 #  MODEL:         NORMAL
@@ -519,20 +531,20 @@ lintlib :
 #  model:         objects
 #  prefix:        lib
 #  suffix:        .a
-#  subset:        termlib+ext_tinfo+base+ext_funcs
+#  subset:        ticlib+termlib+ext_tinfo+base+ext_funcs
 #  driver:        no
-#  ShlibVer:      auto
+#  ShlibVer:      rel
 #  ShlibVerInfix: no
 #  SymLink:       ln -s -f
 #  TermlibRoot:   ncurses
 #  TermlibSuffix: .a
 #  ReLink:        no
-#  DoLinks:       no
+#  DoLinks:       yes
 #  rmSoLocs:      no
 #  ldconfig:      :
 #  overwrite:     no
 #  depend:        ../include/ncurses_cfg.h ./test.priv.h
-#  host:          arm-unknown-eabi
+#  host:          arm-unknown-linux-androideabi
 
 NORMAL_OBJS = \
 	../objects/background$o \
@@ -592,6 +604,7 @@ NORMAL_OBJS = \
 	../objects/test_instr$o \
 	../objects/test_inwstr$o \
 	../objects/test_opaque$o \
+	../objects/test_setupterm$o \
 	../objects/test_vid_puts$o \
 	../objects/test_vidputs$o \
 	../objects/testaddch$o \
@@ -613,9 +626,9 @@ clean ::
 #   model:      objects
 #   MODEL:      NORMAL
 #   echo:       yes
-#   subset:     termlib+ext_tinfo+base+ext_funcs
+#   subset:     ticlib+termlib+ext_tinfo+base+ext_funcs
 #   crenames:   yes
-#   cxxrenames: yes
+#   cxxrenames: 
 #   traces:     DEBUG
 #   srcdir:     .
 
@@ -862,6 +875,10 @@ clean ::
 			$(HEADER_DEPS)
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../test/test_opaque.c -o ../objects/test_opaque$o
 
+../objects/test_setupterm$o :	$(srcdir)/test_setupterm.c \
+			$(HEADER_DEPS)
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../test/test_setupterm.c -o ../objects/test_setupterm$o
+
 ../objects/test_vid_puts$o :	$(srcdir)/test_vid_puts.c \
 			$(HEADER_DEPS)
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../test/test_vid_puts.c -o ../objects/test_vid_puts$o
@@ -896,7 +913,7 @@ clean ::
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_NORMAL) -c ../test/xmas.c -o ../objects/xmas$o
 
 
-# generated by mk-1st.awk (subset=termlib+ext_tinfo+base+ext_funcs)
+# generated by mk-1st.awk (subset=ticlib+termlib+ext_tinfo+base+ext_funcs)
 #  name:          test
 #  traces:        DEBUG
 #  MODEL:         DEBUG
@@ -904,20 +921,20 @@ clean ::
 #  model:         obj_g
 #  prefix:        lib
 #  suffix:        _g.a
-#  subset:        termlib+ext_tinfo+base+ext_funcs
+#  subset:        ticlib+termlib+ext_tinfo+base+ext_funcs
 #  driver:        no
-#  ShlibVer:      auto
+#  ShlibVer:      rel
 #  ShlibVerInfix: no
 #  SymLink:       ln -s -f
 #  TermlibRoot:   ncurses
 #  TermlibSuffix: .a
 #  ReLink:        no
-#  DoLinks:       no
+#  DoLinks:       yes
 #  rmSoLocs:      no
 #  ldconfig:      :
 #  overwrite:     no
 #  depend:        ../include/ncurses_cfg.h ./test.priv.h
-#  host:          arm-unknown-eabi
+#  host:          arm-unknown-linux-androideabi
 
 DEBUG_OBJS = \
 	../obj_g/background$o \
@@ -977,6 +994,7 @@ DEBUG_OBJS = \
 	../obj_g/test_instr$o \
 	../obj_g/test_inwstr$o \
 	../obj_g/test_opaque$o \
+	../obj_g/test_setupterm$o \
 	../obj_g/test_vid_puts$o \
 	../obj_g/test_vidputs$o \
 	../obj_g/testaddch$o \
@@ -998,9 +1016,9 @@ clean ::
 #   model:      obj_g
 #   MODEL:      DEBUG
 #   echo:       yes
-#   subset:     termlib+ext_tinfo+base+ext_funcs
+#   subset:     ticlib+termlib+ext_tinfo+base+ext_funcs
 #   crenames:   yes
-#   cxxrenames: yes
+#   cxxrenames: 
 #   traces:     DEBUG
 #   srcdir:     .
 
@@ -1246,6 +1264,10 @@ clean ::
 ../obj_g/test_opaque$o :	$(srcdir)/test_opaque.c \
 			$(HEADER_DEPS)
 	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../test/test_opaque.c -o ../obj_g/test_opaque$o
+
+../obj_g/test_setupterm$o :	$(srcdir)/test_setupterm.c \
+			$(HEADER_DEPS)
+	$(LIBTOOL_COMPILE) $(CC) $(CFLAGS_DEBUG) -c ../test/test_setupterm.c -o ../obj_g/test_setupterm$o
 
 ../obj_g/test_vid_puts$o :	$(srcdir)/test_vid_puts.c \
 			$(HEADER_DEPS)

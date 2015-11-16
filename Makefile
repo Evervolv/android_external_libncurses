@@ -1,6 +1,6 @@
-# $Id: Makefile.in,v 1.39 2014/12/13 21:52:19 tom Exp $
+# $Id: Makefile.in,v 1.40 2015/08/05 23:15:41 tom Exp $
 ##############################################################################
-# Copyright (c) 1998-2013,2014 Free Software Foundation, Inc.                #
+# Copyright (c) 1998-2014,2015 Free Software Foundation, Inc.                #
 #                                                                            #
 # Permission is hereby granted, free of charge, to any person obtaining a    #
 # copy of this software and associated documentation files (the "Software"), #
@@ -31,7 +31,7 @@
 #
 # Master Makefile for ncurses library.
 
-SHELL = /bin/sh
+SHELL 		= /bin/sh
 
 
 DESTDIR=
@@ -40,9 +40,9 @@ TOP_MFLAGS =  DESTDIR="$(DESTDIR)" RPATH_LIST="$(RPATH_LIST)"
 
 
 
-NCURSES_MAJOR	= 5
-NCURSES_MINOR	= 9
-NCURSES_PATCH	= 20150221
+NCURSES_MAJOR	= 6
+NCURSES_MINOR	= 0
+NCURSES_PATCH	= 20150808
 
 top_srcdir	= .
 srcdir		= .
@@ -52,7 +52,7 @@ exec_prefix	= ${prefix}
 datarootdir	= ${prefix}/share
 
 bindir		= ${exec_prefix}/bin
-ticdir		= /system/usr/share/terminfo
+ticdir		= /system/etc/terminfo
 includedir	= ${prefix}/include
 includesubdir	= /ncurses
 libdir		= ${exec_prefix}/lib
@@ -110,8 +110,10 @@ sources \
 tags \
 uninstall \
 install ::
+	cd man && ${MAKE} ${TOP_MFLAGS} $@
 	cd include && ${MAKE} ${TOP_MFLAGS} $@
 	cd ncurses && ${MAKE} ${TOP_MFLAGS} $@
+	cd progs && ${MAKE} ${TOP_MFLAGS} $@
 	cd panel && ${MAKE} ${TOP_MFLAGS} $@
 	cd menu && ${MAKE} ${TOP_MFLAGS} $@
 	cd form && ${MAKE} ${TOP_MFLAGS} $@
@@ -133,6 +135,15 @@ uninstall.libs \
 install.ncurses \
 uninstall.ncurses ::
 	cd ncurses && ${MAKE} ${TOP_MFLAGS} $@
+
+lint \
+libs \
+lintlib \
+install.libs \
+uninstall.libs \
+install.progs \
+uninstall.progs ::
+	cd progs && ${MAKE} ${TOP_MFLAGS} $@
 
 install.includes \
 uninstall.includes \
@@ -179,6 +190,10 @@ uninstall.test ::
 install.libs uninstall.libs \
 install.data uninstall.data ::
 	cd misc && ${MAKE} ${TOP_MFLAGS} $@
+
+install.man \
+uninstall.man ::
+	cd man && ${MAKE} ${TOP_MFLAGS} $@
 
 distclean ::
 	rm -f config.cache config.log config.status Makefile include/ncurses_cfg.h

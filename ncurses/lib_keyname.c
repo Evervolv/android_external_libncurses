@@ -319,6 +319,7 @@ static const char key_names[] =
 
 #define SIZEOF_TABLE 256
 #define MyTable _nc_globals.keyname_table
+#define MyInit  _nc_globals.init_keyname
 
 NCURSES_EXPORT(NCURSES_CONST char *)
 safe_keyname (SCREEN *sp, int c)
@@ -341,21 +342,36 @@ safe_keyname (SCREEN *sp, int c)
 		if (result == 0 && (c >= 0 && c < SIZEOF_TABLE)) {
 			if (MyTable == 0)
 				MyTable = typeCalloc(char *, SIZEOF_TABLE);
+
 			if (MyTable != 0) {
+				int m_prefix = (sp == 0 || sp->_use_meta);
+
+				/* if sense of meta() changed, discard cached data */
+				if (MyInit != (m_prefix + 1)) {
+					MyInit = m_prefix + 1;
+					for (i = 0; i < SIZEOF_TABLE; ++i) {
+						if (MyTable[i]) {
+							FreeAndNull(MyTable[i]);
+						}
+					}
+				}
+
+				/* create and cache result as needed */
 				if (MyTable[c] == 0) {
 					int cc = c;
 					p = name;
-					if (cc >= 128 && (sp == 0 || sp->_use_meta)) {
-						strcpy(p, "M-");
+#define P_LIMIT (sizeof(name) - (size_t) (p - name))
+					if (cc >= 128 && m_prefix) {
+						_nc_STRCPY(p, "M-", P_LIMIT);
 						p += 2;
 						cc -= 128;
 					}
 					if (cc < 32)
-						sprintf(p, "^%c", cc + '@');
+						_nc_SPRINTF(p, _nc_SLIMIT(P_LIMIT) "^%c", cc + '@');
 					else if (cc == 127)
-						strcpy(p, "^?");
+						_nc_STRCPY(p, "^?", P_LIMIT);
 					else
-						sprintf(p, "%c", cc);
+						_nc_SPRINTF(p, _nc_SLIMIT(P_LIMIT) "%c", cc);
 					MyTable[c] = strdup(name);
 				}
 				result = MyTable[c];

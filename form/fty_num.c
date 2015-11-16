@@ -40,7 +40,7 @@ MODULE_ID("$Id: fty_num.c,v 1.29 2012/02/23 10:02:15 tom Exp $")
 #include <locale.h>
 #endif
 
-#if HAVE_LOCALE_H && !defined(__BIONIC__)
+#if HAVE_LOCALE_H
 #define isDecimalPoint(c) ((c) == ((L && L->decimal_point) ? *(L->decimal_point) : '.'))
 #else
 #define isDecimalPoint(c) ((c) == '.')
@@ -96,7 +96,7 @@ Generic_This_Type(void *arg)
 	  argn->low = args->low;
 	  argn->high = args->high;
 
-#if HAVE_LOCALE_H && !defined(__BIONIC__)
+#if HAVE_LOCALE_H
 	  argn->L = localeconv();
 #else
 	  argn->L = NULL;
